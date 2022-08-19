@@ -1,3 +1,4 @@
 {
-    "port":8080
+    "port":8080,
+    "mongoDB": "mongodb+srv://Shliakhetko:7zbjf8RvGrBYIMdu@techdivision-store.cvarmfz.mongodb.net/?retryWrites=true&w=majority"
 }

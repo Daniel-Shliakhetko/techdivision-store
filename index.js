@@ -6,6 +6,15 @@ const app = express();
 
 const PORT = config.get("port");
 
+mongoose
+  .connect(config.get("mongoDB"), {})
+  .then(() => {
+    console.log("Connected DB...");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
 app.listen(PORT, () => {
-  console.log("Listening ", PORT);
+  console.log(`Listening ${PORT}...`);
 });

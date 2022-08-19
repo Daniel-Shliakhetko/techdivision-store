@@ -1,0 +1,30 @@
+{
+  "name": "techdivision-store",
+  "version": "1.0.0",
+  "description": "MERN Stack Online Store",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Daniel-Shliakhetko/techdivision-store.git"
+  },
+  "keywords": [
+    "mern",
+    "store"
+  ],
+  "author": "Daniel Shliakhetko <danielshliakhetko@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Daniel-Shliakhetko/techdivision-store/issues"
+  },
+  "homepage": "https://github.com/Daniel-Shliakhetko/techdivision-store#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongoose": "^6.5.2"
+  }
+}

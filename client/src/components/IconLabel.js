@@ -1,5 +1,5 @@
 import React from "react";
 
 export const IconLabel = (props) => {
-  return <span>{props.children}</span>;
+  return <div className="">{props.icon}<span className="pl-2">{props.children}</span></div>;
 };

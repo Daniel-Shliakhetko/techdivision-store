@@ -1,9 +1,35 @@
 import React from "react";
+import { ProductCard } from "../components/ProductCard";
+
+const products = [
+  {
+    name: "Bluse",
+    prices: [
+      { currency: "usd", price: 27.95 },
+      { currency: "eur", price: 25.95 },
+      { currency: "rub", price: 1999.95 },
+      { currency: "uah", price: 999.95 },
+    ],
+    rating: [
+      { rate: 1, votes: 445 },
+      { rate: 2, votes: 44 },
+      { rate: 3, votes: 130 },
+      { rate: 4, votes: 534 },
+      { rate: 5, votes: 245 },
+    ],
+    
+  },
+];
 
 export const FrontPage = (props) => {
   return (
     <>
-      <h1 className="text-black">FrontPage</h1>
+      <div class="w-full flex bg-grey-200 space-x-4 py-12 px-20">
+        <ProductCard product={products[0]} />
+        <ProductCard product={products[0]} />
+        <ProductCard product={products[0]} />
+        <ProductCard product={products[0]} />
+      </div>
     </>
   );
 };

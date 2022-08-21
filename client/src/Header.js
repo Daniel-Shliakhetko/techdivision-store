@@ -47,11 +47,6 @@ export const Header = (props) => {
     toggleMenu(size.width < 768);
   }, [size, toggleMenu]);
 
-
-
-  const togglerShape =
-    "h-1 w-8 bg-black after:h-1 after:w-8 after:bg-black after:translate-y-2 after:content-[''] after:absolute after:top-0 after:left-0 before:h-1 before:w-8 before:bg-black before:-translate-y-2 before:content-[''] before:absolute before:top-0 before:left-0";
-
   return (
     <div className="header w-full bg-grey-100">
       <HeaderInfo language={header.language} info={header.info} />
@@ -62,7 +57,7 @@ export const Header = (props) => {
             toggleMenu(!isHidden);
           }}  
         >
-          <div className={togglerShape}></div>
+          <div className="h-1 w-8 bg-black after:h-1 after:w-8 after:bg-black after:translate-y-2 after:content-[''] after:absolute after:top-0 after:left-0 before:h-1 before:w-8 before:bg-black before:-translate-y-2 before:content-[''] before:absolute before:top-0 before:left-0"></div>
         </button>
         <NavigationFunctions
           navigation={header.navigation}
@@ -97,7 +92,7 @@ const NavigationFunctions = (props) => {
   const navigate = useNavigate();
   return (
     props.navigation && (
-      <div className="w-full px-2 md:px-[7.5%] lg:px-[15%] bg-grey-0 border-y border-grey-300 divide-grey-300 flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x">
+      <div className="w-full px-2 md:px-[7.5%] lg:px-[15%] bg-grey-0 border-y border-grey-300/50 divide-grey-300/50 flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x">
         <NavigationFunctionWrapper>
           <div className="w-full h-full flex md:block justify-center">
             <img className="max-h-full p-1" src={logo} alt="Website Logo" />

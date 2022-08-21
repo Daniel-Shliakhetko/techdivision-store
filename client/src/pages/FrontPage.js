@@ -4,6 +4,12 @@ import { ProductCard } from "../components/ProductCard";
 const products = [
   {
     name: "Bluse",
+    colors:[
+      {name:"Black", color:"#201f1d"},
+      {name:"Gray", color:"#a19c96"},
+      {name:"Brown Yellow", color:"#b39468"},
+      {name:"White", color:"#e5e4df"}
+    ],
     prices: [
       { currency: "usd", price: 27.95 },
       { currency: "eur", price: 25.95 },
@@ -17,18 +23,17 @@ const products = [
       { rate: 4, votes: 534 },
       { rate: 5, votes: 245 },
     ],
-    
   },
 ];
 
 export const FrontPage = (props) => {
   return (
     <>
-      <div class="w-full flex bg-grey-200 space-x-4 py-12 px-20">
-        <ProductCard product={products[0]} />
-        <ProductCard product={products[0]} />
-        <ProductCard product={products[0]} />
-        <ProductCard product={products[0]} />
+      <div class="w-full flex flex-col md:flex-row bg-grey-200 space-y-4 md:space-x-4 md:space-y-0 py-12 px-20">
+        <ProductCard product={products[0]}/>
+        <ProductCard product={products[0]}/>
+        <ProductCard product={products[0]}/>
+        <ProductCard product={products[0]}/>
       </div>
     </>
   );

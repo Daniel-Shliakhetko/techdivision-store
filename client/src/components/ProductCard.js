@@ -3,12 +3,18 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { priceWithCurrency } from "../helpers/priceWithCurrency";
 import { ratingToNumber } from "../helpers/ratingToNumber";
+import { ProductColors } from "./ProductColors";
 import { Stars } from "./Stars";
+import bluse from '../images/bluse.png';
 
 export const ProductCard = (props) => {
-  const { product } = props;
+  const { product, className} = props;
 
   const [isReady, changeToReady] = useState(false);
+
+  const defaultClass = 'w-full md:w-1/2 lg:w-1/4';
+
+  const additionalClass = className || defaultClass;
 
   useEffect(() => {
     setTimeout(() => {
@@ -17,10 +23,13 @@ export const ProductCard = (props) => {
   });
 
   return (
-    <div className="product-card flex flex-col justify-center items-center w-1/4 bg-grey-0 p-4 pb-8">
-      <hr className="bg-grey-200 w-2/3 mb-2" />
-      <h3 clasName="font-semibold">{product.name}</h3>
-      <span className="font-bold">{priceWithCurrency(product.prices[1])}</span>
+    <div className={"product-card flex flex-col justify-center items-center bg-grey-0 px-10 pt-4 pb-8 "+ additionalClass}>
+
+      <img className="max-w-[10rem]" src={bluse} alt={product.name} title={product.name}/>
+      <hr className="bg-grey-200 w-2/3 my-2" />
+      <h3 clasName="font-semibold" title={product.name}>{product.name}</h3>
+      <ProductColors colors={product.colors}/>
+      <span className="font-bold" title={priceWithCurrency(product.prices[1])}>{priceWithCurrency(product.prices[1])}</span>
       <Stars rate={ratingToNumber(product.rating)} />
     </div>
   );

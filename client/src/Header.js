@@ -11,6 +11,8 @@ import {
   faCartShopping,
   faEarthAmericas,
   faPhone,
+  faSignIn,
+  faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
 const mainPath = "";
@@ -27,6 +29,8 @@ const header = {
     search: "Suche",
     shoppingCart: "Warenkorb",
     account: "Mein Konto",
+    registration: "Register",
+    login: "Login",
     items: [
       { name: "fashion", slug: "/" },
       { name: "elektronik", slug: "/" },
@@ -40,6 +44,8 @@ const header = {
 };
 
 export const Header = (props) => {
+  const { isAuthenticated } = props;
+
   const size = useWindowSize();
   const [isHidden, toggleMenu] = useState(size.width < 768);
 
@@ -55,11 +61,12 @@ export const Header = (props) => {
           className="absolute top-5 right-5 md:hidden"
           onClick={() => {
             toggleMenu(!isHidden);
-          }}  
+          }}
         >
           <div className="h-1 w-8 bg-black after:h-1 after:w-8 after:bg-black after:translate-y-2 after:content-[''] after:absolute after:top-0 after:left-0 before:h-1 before:w-8 before:bg-black before:-translate-y-2 before:content-[''] before:absolute before:top-0 before:left-0"></div>
         </button>
         <NavigationFunctions
+          isAuthenticated={isAuthenticated}
           navigation={header.navigation}
           status={!isHidden}
         />
@@ -89,6 +96,7 @@ const HeaderInfo = (props) => {
 };
 
 const NavigationFunctions = (props) => {
+  const { isAuthenticated } = props;
   const navigate = useNavigate();
   return (
     props.navigation && (
@@ -115,24 +123,49 @@ const NavigationFunctions = (props) => {
         </NavigationFunctionWrapper>
         <NavigationFunctionWrapper className={!props.status && "hidden"}>
           <div className="w-full h-full flex justify-center space-x-6">
-            <button
-              onClick={() => {
-                navigate(`${mainPath}/users/${userId}`);
-              }}
-            >
-              <IconLabel icon={<FontAwesomeIcon icon={faUser} />}>
-                {props.navigation.account}
-              </IconLabel>
-            </button>
-            <button
-              onClick={() => {
-                navigate(`${mainPath}/users/${userId}/cart`);
-              }}
-            >
-              <IconLabel icon={<FontAwesomeIcon icon={faCartShopping} />}>
-                {props.navigation.shoppingCart}
-              </IconLabel>
-            </button>
+            {isAuthenticated ? (
+              <>
+                <button
+                  onClick={() => {
+                    navigate(`${mainPath}/users/${userId}`);
+                  }}
+                >
+                  <IconLabel icon={<FontAwesomeIcon icon={faUser} />}>
+                    {props.navigation.account}
+                  </IconLabel>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate(`${mainPath}/users/${userId}/cart`);
+                  }}
+                >
+                  <IconLabel icon={<FontAwesomeIcon icon={faCartShopping} />}>
+                    {props.navigation.shoppingCart}
+                  </IconLabel>
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    navigate(`${mainPath}/auth/login`);
+                  }}
+                >
+                  <IconLabel icon={<FontAwesomeIcon icon={faSignIn} />}>
+                    {props.navigation.login}
+                  </IconLabel>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate(`${mainPath}/auth/register`);
+                  }}
+                >
+                  <IconLabel icon={<FontAwesomeIcon icon={faUserPlus} />}>
+                    {props.navigation.registration}
+                  </IconLabel>
+                </button>
+              </>
+            )}
           </div>
         </NavigationFunctionWrapper>
       </div>

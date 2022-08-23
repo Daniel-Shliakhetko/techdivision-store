@@ -23,31 +23,74 @@ export const AuthPage = (props) => {
 };
 
 class Login extends React.Component {
+  state = {
+    email: "",
+    password: "",
+
+    isLogged: false,
+  };
+
+  handleChange = (e) => {
+    let obj = {};
+    obj[e.target.name] = e.target.value;
+    this.setState(obj);
+  };
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+
+    const user = {
+      email: this.state.email,
+      password: this.state.password,
+    };
+
+    axios
+      .post("/api/auth/login", user)
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        res.data.isLogged && this.setState({ isLogged: true });
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.error(error.response.data);
+          console.error(error.response.status);
+          console.error(error.response.headers);
+        }
+      });
+  };
   render() {
     return (
-      <form className="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full sm:w-72 mb-12">
-        <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
-          Login
-        </h1>
-        <input
-          type="text"
-          name="email"
-          placeholder="Enter your email"
-          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter your password"
-          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-        />
-        <input
-          type="submit"
-          name="submit"
-          value="Login"
-          className="bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
-        />
-      </form>
+      !this.state.isLogged && (
+        <form
+          className="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full sm:w-72 mb-12"
+          onSubmit={this.handleSubmit}
+        >
+          <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
+            Login
+          </h1>
+          <input
+            type="text"
+            name="email"
+            placeholder="Enter your email"
+            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+            onChange={this.handleChange}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+            onChange={this.handleChange}
+          />
+          <button
+            type="submit"
+            className="bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
+          >
+            Login
+          </button>
+        </form>
+      )
     );
   }
 }
@@ -96,9 +139,9 @@ class Register extends React.Component {
         className="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full sm:w-72"
         onSubmit={this.handleSubmit}
       >
-        {/* <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
-            Registration
-          </h1> */}
+        <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
+          Registration
+        </h1>
 
         <input
           type="text"

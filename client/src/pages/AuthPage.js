@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import logo from "../images/techdivision-logo.png";
+import axios from "axios";
 
 export const AuthPage = (props) => {
   const params = useParams();
@@ -10,71 +11,136 @@ export const AuthPage = (props) => {
 
   return (
     <div className="w-full h-screen flex justify-center items-center p-4 relative">
-      <button className="absolute top-8 left-0 w-full flex justify-center" onClick={()=>navigate('/')}>
-        <img className="h-16" src={logo} alt="Logo"/>
+      <button
+        className="absolute top-8 left-0 w-full flex justify-center"
+        onClick={() => navigate("/")}
+      >
+        <img className="h-16" src={logo} alt="Logo" />
       </button>
-      {isLogin ? (
-        <form class="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full sm:w-72 mb-12">
-          <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
-            Login
-          </h1>
-          <input
-            type="text"
-            name="email"
-            placeholder="Enter your email"
-            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          />
-          <input
-            type="submit"
-            name="submit"
-            value="Login"
-            className="bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
-          />
-        </form>
-      ) : (
-        <form class="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full sm:w-72">
-          <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
-            Registration
-          </h1>
-
-          <input
-            type="text"
-            name="name"
-            placeholder="Enter your name"
-            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          />
-          <input
-            type="text"
-            name="email"
-            placeholder="Enter your email"
-            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Repeat your password"
-            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          />
-          <input
-            type="submit"
-            name="submit"
-            value="Login"
-            className="bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
-          />
-        </form>
-      )}
+      {isLogin ? <Login /> : <Register />}
     </div>
   );
 };
+
+class Login extends React.Component {
+  render() {
+    return (
+      <form className="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full sm:w-72 mb-12">
+        <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
+          Login
+        </h1>
+        <input
+          type="text"
+          name="email"
+          placeholder="Enter your email"
+          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter your password"
+          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+        />
+        <input
+          type="submit"
+          name="submit"
+          value="Login"
+          className="bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
+        />
+      </form>
+    );
+  }
+}
+
+class Register extends React.Component {
+  state = {
+    name: "",
+    lastName: "",
+    email: "",
+    password: "",
+  };
+
+  handleChange = (e) => {
+    let obj = {};
+    obj[e.target.name] = e.target.value;
+    this.setState(obj);
+  };
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+
+    const user = {
+      name: this.state.name,
+      lastName: this.state.lastName,
+      email: this.state.email,
+      password: this.state.password,
+    };
+
+    axios
+      .post("/api/auth/register", user)
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.error(error.response.data);
+          console.error(error.response.status);
+          console.error(error.response.headers);
+        }
+      });
+  };
+  render() {
+    return (
+      <form
+        className="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full sm:w-72"
+        onSubmit={this.handleSubmit}
+      >
+        {/* <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
+            Registration
+          </h1> */}
+
+        <input
+          type="text"
+          name="name"
+          placeholder="Enter your name"
+          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+          onChange={this.handleChange}
+        />
+        <input
+          type="text"
+          name="lastName"
+          placeholder="Enter your lastname"
+          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+          onChange={this.handleChange}
+        />
+        <input
+          type="text"
+          name="email"
+          placeholder="Enter your email"
+          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+          onChange={this.handleChange}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter your password"
+          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+          onChange={this.handleChange}
+        />
+        <input
+          type="password"
+          name="passwordRepeat"
+          placeholder="Repeat your password"
+          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+        />
+        <button
+          type="submit"
+          className="bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
+        >
+          Reigster
+        </button>
+      </form>
+    );
+  }
+}

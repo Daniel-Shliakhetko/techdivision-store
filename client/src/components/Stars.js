@@ -7,7 +7,7 @@ const stars = [1, 2, 3, 4, 5];
 export const Stars = (props) => {
     const {rate} = props;
   return (
-    <ul class="stars flex" title={`${rate} / 5`}>
+    <ul className="stars flex" title={`${rate} / 5`}>
       {stars.map((star) => (
         <li className="relative">
           <FontAwesomeIcon icon={faStar} color={"#ced0cf"} />

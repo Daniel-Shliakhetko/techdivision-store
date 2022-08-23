@@ -3,7 +3,7 @@ import React from "react";
 export const ProductColors = (props) => {
   const { colors } = props;
   return (
-    <ul class="colors flex space-x-1 my-1">
+    <ul className="colors flex space-x-1 my-1">
       {colors.map((color, i) => (
         <li>
           <button

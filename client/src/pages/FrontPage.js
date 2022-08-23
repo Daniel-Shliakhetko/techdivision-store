@@ -29,7 +29,7 @@ const products = [
 export const FrontPage = (props) => {
   return (
     <>
-      <div class="w-full flex flex-col md:flex-row flex-wrap bg-grey-200 sm:px-20 sm:py-12">
+      <div className="w-full flex flex-col md:flex-row flex-wrap bg-grey-200 sm:px-20 sm:py-12">
         <ProductCard product={products[0]}/>
         <ProductCard product={products[0]}/>
         <ProductCard product={products[0]}/>

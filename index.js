@@ -19,4 +19,6 @@ app.listen(PORT, () => {
   console.log(`Listening ${PORT}...`);
 });
 
-app.use('/api/auth', require('./routes/user.routes'))
+app.use(express.json({ extended: true }));
+
+app.use("/api/auth", require("./routes/user.routes"));

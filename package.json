@@ -4,8 +4,9 @@
   "description": "MERN Stack Online Store",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon index",
-    "client": "npm run start --prefix client"
+    "server": "nodemon index",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
     "type": "git",

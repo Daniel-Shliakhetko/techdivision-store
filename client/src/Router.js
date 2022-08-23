@@ -16,15 +16,21 @@ const mainPath = "";
 export const Router = (props) => {
   return (
     <Routes>
-      <Route path={mainPath+"/"} exact element={<FrontPage />} />
-      <Route path={mainPath+"/catalogue"} exact element={<CataloguePage />} />
-      <Route path={mainPath+"/categories/:category/:option"} element={<CategoryPage />} />
-      <Route path={mainPath+"/products/:id"} element={<ProductPage />} />
-      <Route path={mainPath+"/auth/:type"} element={<AuthPage />} />
-      <Route path={mainPath+"/users/:id"} element={<AccountPage />} />
-      <Route path={mainPath+"/users/:id/cart"} element={<ShoppingCartPage />} />
-      <Route path={mainPath+"/users/:id/create"} element={<CreatePage />} />
-      <Route path={mainPath+"/search/:search"} element={<SearchPage />} />
+      <Route path={mainPath + "/"} exact element={<FrontPage />} />
+      <Route path={mainPath + "/catalogue"} exact element={<CataloguePage />} />
+      <Route
+        path={mainPath + "/categories/:category/:option"}
+        element={<CategoryPage />}
+      />
+      <Route path={mainPath + "/products/:id"} element={<ProductPage />} />
+      <Route path={mainPath + "/auth/:type"} element={<AuthPage />} />
+      <Route path={mainPath + "/users/:id"} element={<AccountPage />} />
+      <Route
+        path={mainPath + "/users/:id/cart"}
+        element={<ShoppingCartPage />}
+      />
+      <Route path={mainPath + "/users/:id/create"} element={<CreatePage />} />
+      <Route path={mainPath + "/search/:search"} element={<SearchPage />} />
       <Route path={"*"} element={<ErrorPage />} />
     </Routes>
   );

@@ -44,7 +44,7 @@ const header = {
 };
 
 export const Header = (props) => {
-  const { isAuthenticated } = props;
+  const { isAuthenticated, isAuthPage } = props;
 
   const size = useWindowSize();
   const [isHidden, toggleMenu] = useState(size.width < 768);
@@ -54,6 +54,7 @@ export const Header = (props) => {
   }, [size, toggleMenu]);
 
   return (
+    !isAuthPage &&
     <div className="header w-full bg-grey-100">
       <HeaderInfo language={header.language} info={header.info} />
       <nav className="w-full relative">

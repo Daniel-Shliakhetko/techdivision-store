@@ -17,7 +17,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const mainPath = "";
-const userId = 5483920358952;
 
 const header = {
   language: "de",
@@ -132,7 +131,7 @@ const NavigationFunctions = (props) => {
               <>
                 <button
                   onClick={() => {
-                    navigate(`${mainPath}/users/${userId}`);
+                    navigate(`${mainPath}/users/${auth.userId}`);
                   }}
                 >
                   <IconLabel icon={<FontAwesomeIcon icon={faUser} />}>
@@ -141,7 +140,7 @@ const NavigationFunctions = (props) => {
                 </button>
                 <button
                   onClick={() => {
-                    navigate(`${mainPath}/users/${userId}/cart`);
+                    navigate(`${mainPath}/users/${auth.userId}/cart`);
                   }}
                 >
                   <IconLabel icon={<FontAwesomeIcon icon={faCartShopping} />}>

@@ -29,7 +29,10 @@ const Login = (props) => {
     email: "",
     password: "",
   });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
   const auth = useContext(AuthContext);
 
   const handleChange = (e) => {
@@ -43,19 +46,23 @@ const Login = (props) => {
       email: form.email,
       password: form.password,
     };
+    setLoading(true);
+    setError(null);
 
     axios
       .post("/api/auth/login", user)
       .then((res) => {
-        console.log(res);
-        console.log(res.data);
+        setLoading(false);
         auth.login(res.data.token, res.data.userId);
+        navigate("/");
       })
-      .catch((error) => {
-        if (error.response) {
-          console.error(error.response.data);
-          console.error(error.response.status);
-          console.error(error.response.headers);
+      .catch((err) => {
+        setLoading(false);
+        if (err.response) {
+          console.error(err.response.data);
+          console.error(err.response.status);
+          console.error(err.response.headers);
+          setError(err.response.data.message);
         }
       });
   };
@@ -84,10 +91,20 @@ const Login = (props) => {
       />
       <button
         type="submit"
-        className="bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
+        className={
+          !loading
+            ? "bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
+            : "bg-grey-300 rounded-sm border-grey-400 outline-grey-400 outline-2 border p-1 uppercase text-gray-700 font-semibold"
+        }
+        disabled={loading}
       >
         Login
       </button>
+      {error && (
+        <div className="rounded-sm border-red-400 text-red-800 bg-red-200 border p-2">
+          {error}
+        </div>
+      )}
     </form>
   );
 };

@@ -55,17 +55,17 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user) {
-      await bcrypt.compare(password, user.password, function (err, data) {
-        if (err) return res.status(400).json({ message: "Incorect password" });
+      const isMatch = await bcrypt.compare(password, user.password);
 
-        if (data) {
-          const token = jwt.sign({ userId: user.id }, config.get("jwtSecret"), {
-            expiresIn: "1h",
-          });
+      if (isMatch) {
+        const token = jwt.sign({ userId: user.id }, config.get("jwtSecret"), {
+          expiresIn: "1h",
+        });
 
-          res.json({ token, userId: user.id });
-        }
-      });
+        res.json({ token, userId: user.id }); 
+      } else {
+        res.status(400).json({ message: "Incorect password" });
+      }
     } else {
       res.status(400).json({ message: "Wrong email" });
     }

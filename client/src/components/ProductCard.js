@@ -39,7 +39,7 @@ export const ProductCard = (props) => {
           title={product.name}
         />
         <hr className="bg-grey-200 w-2/3 my-2" />
-        <h3 clasName="font-semibold" title={product.name}>
+        <h3 className="font-semibold" title={product.name}>
           {product.name}
         </h3>
         <ProductColors colors={product.colors} />

@@ -8,8 +8,8 @@ export const Stars = (props) => {
     const {rate} = props;
   return (
     <ul className="stars flex" title={`${rate} / 5`}>
-      {stars.map((star) => (
-        <li className="relative">
+      {stars.map((star, i) => (
+        <li className="relative" key={i}>
           <FontAwesomeIcon icon={faStar} color={"#ced0cf"} />
           {rate+1 > (star) && <FontAwesomeIcon
             className="absolute top-1 left-0 z-20"

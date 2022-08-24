@@ -1,9 +1,10 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import logo from "./images/techdivision-logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { IconLabel } from "./components/IconLabel";
-import { useWindowSize } from "./hooks/useWindowSize";
+import { useWindowSize } from "./hooks/useWindowSize.hook";
+import {AuthContext} from './context/AuthContext'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
@@ -31,6 +32,7 @@ const header = {
     account: "Mein Konto",
     registration: "Register",
     login: "Login",
+    logout: "Logout",
     items: [
       { name: "fashion", slug: "/" },
       { name: "elektronik", slug: "/" },
@@ -44,7 +46,8 @@ const header = {
 };
 
 export const Header = (props) => {
-  const { isAuthenticated, isAuthPage } = props;
+  const { isAuthPage } = props;
+  const auth = useContext(AuthContext);
 
   const size = useWindowSize();
   const [isHidden, toggleMenu] = useState(size.width < 768);
@@ -67,7 +70,7 @@ export const Header = (props) => {
           <div className="h-1 w-8 bg-black after:h-1 after:w-8 after:bg-black after:translate-y-2 after:content-[''] after:absolute after:top-0 after:left-0 before:h-1 before:w-8 before:bg-black before:-translate-y-2 before:content-[''] before:absolute before:top-0 before:left-0"></div>
         </button>
         <NavigationFunctions
-          isAuthenticated={isAuthenticated}
+          isAuthenticated={auth.isAuthenticated}
           navigation={header.navigation}
           status={!isHidden}
         />
@@ -97,6 +100,7 @@ const HeaderInfo = (props) => {
 };
 
 const NavigationFunctions = (props) => {
+  const auth = useContext(AuthContext);
   const { isAuthenticated } = props;
   const navigate = useNavigate();
   return (
@@ -142,6 +146,16 @@ const NavigationFunctions = (props) => {
                 >
                   <IconLabel icon={<FontAwesomeIcon icon={faCartShopping} />}>
                     {props.navigation.shoppingCart}
+                  </IconLabel>
+                </button>
+                <button
+                  onClick={() => {
+                    auth.logout();
+                    navigate(`${mainPath}/`);
+                  }}
+                >
+                  <IconLabel icon={<FontAwesomeIcon icon={faSignIn} />}>
+                    {props.navigation.logout}
                   </IconLabel>
                 </button>
               </>

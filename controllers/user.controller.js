@@ -1,5 +1,7 @@
 const path = require("path");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 const { check, validationResult } = require("express-validator");
 
 const User = require("../models/User");
@@ -50,14 +52,19 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log(req.body);
+    const user = await User.findOne({ email });
 
-    const account = await User.findOne({ email });
+    if (user) {
+      await bcrypt.compare(password, user.password, function (err, data) {
+        if (err) return res.status(400).json({ message: "Incorect password" });
 
-    if (account) {
-      await bcrypt.compare(password, account.password, function (err, data) {
-        if (data) res.status(201).json({ message: "User logged in", isLogged:true});
-        if (err) res.status(400).json({ message: "Incorect password" });
+        if (data) {
+          const token = jwt.sign({ userId: user.id }, config.get("jwtSecret"), {
+            expiresIn: "1h",
+          });
+
+          res.json({ token, userId: user.id });
+        }
       });
     } else {
       res.status(400).json({ message: "Wrong email" });

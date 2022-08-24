@@ -16,8 +16,12 @@ const regitsterUser = async (req, res) => {
         .json({ message: "Incorect data", errors: errors.array() });
     }
 
-    const { name, lastName, email, password } = req.body;
+    const { name, lastName, email, password, isPassword } = req.body;
 
+    if (!isPassword) {
+      return res.status(400).json({ message: "Passwords have to match" });
+    }
+    
     const candidate = await User.findOne({ email });
 
     if (candidate) {
@@ -44,8 +48,15 @@ const regitsterUser = async (req, res) => {
 };
 
 const regitsterUserValidator = [
-  check("email", "Incorect email").isEmail(),
-  check("password", "Incorect password").isLength({ min: 6 }),
+  check("name", "Enter your name").contains(),
+  check("name", "Your name must be longer than 3 letters").isLength({ min: 3 }),
+  check("lastName", "Enter your last name").contains(),
+  check("email", "Enter your email").contains(),
+  check("email", "Incorect email").normalizeEmail().isEmail(),
+  check("password", "Enter your password").contains(),
+  check("password", "Your password must be longer than 6 letters").isLength({
+    min: 6,
+  }),
 ];
 
 const loginUser = async (req, res) => {
@@ -62,7 +73,7 @@ const loginUser = async (req, res) => {
           expiresIn: "1h",
         });
 
-        res.json({ token, userId: user.id }); 
+        res.json({ token, userId: user.id });
       } else {
         res.status(400).json({ message: "Incorect password" });
       }

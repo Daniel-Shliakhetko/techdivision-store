@@ -109,95 +109,124 @@ const Login = (props) => {
   );
 };
 
-class Register extends React.Component {
-  state = {
+const Register = (props) => {
+  const [form, setForm] = useState({
     name: "",
     lastName: "",
     email: "",
     password: "",
+    passwordRepeat: "",
+  });
+
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  handleChange = (e) => {
-    let obj = {};
-    obj[e.target.name] = e.target.value;
-    this.setState(obj);
-  };
-
-  handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
+    const isPassword = form.password === form.passwordRepeat;
+
     const user = {
-      name: this.state.name,
-      lastName: this.state.lastName,
-      email: this.state.email,
-      password: this.state.password,
+      name: form.name,
+      lastName: form.lastName,
+      email: form.email,
+      password: form.password,
+      isPassword: isPassword,
     };
+
+    setLoading(true);
+    setError(null);
 
     axios
       .post("/api/auth/register", user)
       .then((res) => {
+        setLoading(false);
+
         console.log(res);
         console.log(res.data);
+        navigate("/auth/login");
       })
-      .catch((error) => {
-        if (error.response) {
-          console.error(error.response.data);
-          console.error(error.response.status);
-          console.error(error.response.headers);
+      .catch((err) => {
+        setLoading(false);
+        if (err.response) {
+          console.error(err.response.data);
+          console.error(err.response.status);
+          console.error(err.response.headers);
+          setError(
+            err.response.data.errors
+              ? err.response.data.errors[0].msg
+              : err.response.data.message
+          );
         }
       });
   };
-  render() {
-    return (
-      <form
-        className="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full sm:w-72"
-        onSubmit={this.handleSubmit}
-      >
-        <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
-          Registration
-        </h1>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Enter your name"
-          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          onChange={this.handleChange}
-        />
-        <input
-          type="text"
-          name="lastName"
-          placeholder="Enter your lastname"
-          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          onChange={this.handleChange}
-        />
-        <input
-          type="text"
-          name="email"
-          placeholder="Enter your email"
-          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          onChange={this.handleChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter your password"
-          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          onChange={this.handleChange}
-        />
-        <input
-          type="password"
-          name="passwordRepeat"
-          placeholder="Repeat your password"
-          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-        />
-        <button
-          type="submit"
-          className="bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
-        >
-          Reigster
-        </button>
-      </form>
-    );
-  }
-}
+  return (
+    <form
+      className="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full sm:w-72"
+      onSubmit={handleSubmit}
+    >
+      <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
+        Registration
+      </h1>
+
+      <input
+        type="text"
+        name="name"
+        placeholder="Enter your name"
+        className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+        onChange={handleChange}
+      />
+      <input
+        type="text"
+        name="lastName"
+        placeholder="Enter your last name"
+        className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+        onChange={handleChange}
+      />
+      <input
+        type="text"
+        name="email"
+        placeholder="Enter your email"
+        className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+        onChange={handleChange}
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Enter your password"
+        className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+        onChange={handleChange}
+      />
+      <input
+        type="password"
+        name="passwordRepeat"
+        placeholder="Repeat your password"
+        className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+        onChange={handleChange}
+      />
+      <button
+        type="submit"
+        className={
+          !loading
+            ? "bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
+            : "bg-grey-300 rounded-sm border-grey-400 outline-grey-400 outline-2 border p-1 uppercase text-gray-700 font-semibold"
+        }
+        disabled={loading}
+      >
+        Reigster
+      </button>
+      {error && (
+        <div className="rounded-sm border-red-400 text-red-800 bg-red-200 border p-2">
+          {error}
+        </div>
+      )}
+    </form>
+  );
+};

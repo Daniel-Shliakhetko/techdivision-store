@@ -17,7 +17,7 @@ export const Router = (props) => {
   return (
     <Routes>
       <Route path={mainPath + "/"} exact element={<FrontPage />} />
-      <Route path={mainPath + "/catalogue"} exact element={<CataloguePage />} />
+      <Route path={mainPath + "/products"} exact element={<CataloguePage />} />
       <Route
         path={mainPath + "/categories/:category/:option"}
         element={<CategoryPage />}

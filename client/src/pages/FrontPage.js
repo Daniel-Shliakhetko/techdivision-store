@@ -3,7 +3,7 @@ import { ProductCard } from "../components/ProductCard";
 
 const products = [
   {
-    name: "Bluse",
+    title: "Bluse",
     colors:[
       {name:"Black", color:"#201f1d"},
       {name:"Gray", color:"#a19c96"},

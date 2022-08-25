@@ -35,12 +35,12 @@ export const ProductCard = (props) => {
         <img
           className="max-w-[10rem]"
           src={bluse}
-          alt={product.name}
-          title={product.name}
+          alt={product.title}
+          title={product.title}
         />
         <hr className="bg-grey-200 w-2/3 my-2" />
-        <h3 className="font-semibold" title={product.name}>
-          {product.name}
+        <h3 className="font-semibold" title={product.title}>
+          {product.title}
         </h3>
         <ProductColors colors={product.colors} />
         <span

@@ -94,7 +94,32 @@ const product = {
     { rate: 4, votes: 534 },
     { rate: 5, votes: 245 },
   ],
-  comments: [{ user: "", title: "", description: "" }],
+  comments: [
+    {
+      user: "321543432532",
+      rate: 4,
+      title: "Very Good product",
+      description:
+        "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi magnam sequi esse nam odio maiores error quaerat voluptatibus, voluptatum laborum culpa earum animi provident ullam nesciunt nemo? Earum, reiciendis illo.",
+      date: new Date(),
+    },
+    {
+      user: "321543432532",
+      rate: 4,
+      title: "Very Good product",
+      description:
+        "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi magnam sequi esse nam odio maiores error quaerat voluptatibus, voluptatum laborum culpa earum animi provident ullam nesciunt nemo? Earum, reiciendis illo.",
+      date: new Date(),
+    },
+    {
+      user: "321543432532",
+      rate: 4,
+      title: "Very Good product",
+      description:
+        "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi magnam sequi esse nam odio maiores error quaerat voluptatibus, voluptatum laborum culpa earum animi provident ullam nesciunt nemo? Earum, reiciendis illo.",
+      date: new Date(),
+    },
+  ],
 };
 
 export const ProductPage = (props) => {
@@ -113,12 +138,13 @@ export const ProductPage = (props) => {
       <MainInfo rating={product.rating} brand={brand}>
         {product.title}
       </MainInfo>
+      <Description>{product.description}</Description>
       <Payment colors={colors} prices={product.prices}></Payment>
       <AdditionalInfo
         available={product.available}
         delivery={product.delivery}
       />
-      <Description>{product.description}</Description>
+      <Comments comments={product.comments} />
     </div>
   );
 };
@@ -228,6 +254,58 @@ const AdditionalInfo = (props) => {
           CHANGE TO AUTHOR EMAIL
         </IconLabel>
       </div>
+    </SectionWrapper>
+  );
+};
+
+const Comments = (props) => {
+  const comments = props.comments;
+  return (
+    <SectionWrapper>
+      <h2 className="font-bold text-lg uppercase mb-6">Comments</h2>
+      <div className="space-y-4">
+        {comments.map((comment, i) => (
+          <Comment comment={comment} />
+        ))}
+      </div>
+    </SectionWrapper>
+  );
+};
+
+const Comment = (props) => {
+  const comment = props.comment;
+  return (
+    <div className="comment">
+      <h3 className="font-bold text-md">{comment.title}</h3>
+      <p>{comment.description}</p>
+      <Stars rate={comment.rate} />
+      <span className="text-grey-300">
+        Posted on: {new Date(comment.date).toUTCString()}
+      </span>
+    </div>
+  );
+};
+
+const WriteComment = (props) => {
+  return (
+    <SectionWrapper>
+      <h2 className="font-bold text-lg uppercase">Comments</h2>
+    </SectionWrapper>
+  );
+};
+
+const Gallery = (props) => {
+  return (
+    <SectionWrapper>
+      <h2 className="font-bold text-lg uppercase">Comments</h2>
+    </SectionWrapper>
+  );
+};
+
+const AdditionalDescriptions = (props) => {
+  return (
+    <SectionWrapper>
+      <h2 className="font-bold text-lg uppercase">Comments</h2>
     </SectionWrapper>
   );
 };

@@ -6,17 +6,30 @@ import { BrandLogo } from "../components/BrandLogo";
 import { ProductColors } from "../components/ProductColors";
 import { priceWithCurrency } from "../helpers/priceWithCurrency";
 import { AddToCart, SettleButton } from "../components/Button";
+import { IconLabel } from "../components/IconLabel";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faMagnifyingGlass,
+  faUser,
+  faCartShopping,
+  faEarthAmericas,
+  faPhone,
+  faSignIn,
+  faUserPlus,
+  faCheck,
+  faXmark,
+  faTruck,
+  faEnvelope,
+} from "@fortawesome/free-solid-svg-icons";
 
 const product = {
   title: "Bluse",
   description:
     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi magnam sequi esse nam odio maiores error quaerat voluptatibus, voluptatum laborum culpa earum animi provident ullam nesciunt nemo? Earum, reiciendis illo.",
-  colors: [
-    { name: "Black", color: "#201f1d" },
-    { name: "Gray", color: "#a19c96" },
-    { name: "Brown Yellow", color: "#b39468" },
-    { name: "White", color: "#e5e4df" },
-  ],
+  date: new Date(),
+  author: "8329765920347023",
+  available: 45,
+  delivery: true,
   prices: [
     { currency: "usd", price: 27.95, discount: 12.5 },
     { currency: "eur", price: 25.95, discount: 12.5 },
@@ -101,6 +114,10 @@ export const ProductPage = (props) => {
         {product.title}
       </MainInfo>
       <Payment colors={colors} prices={product.prices}></Payment>
+      <AdditionalInfo
+        available={product.available}
+        delivery={product.delivery}
+      />
       <Description>{product.description}</Description>
     </div>
   );
@@ -178,7 +195,41 @@ const Payment = (props) => {
 };
 
 const AdditionalInfo = (props) => {
-  return <SectionWrapper></SectionWrapper>;
+  const availabe = props.available > 0;
+  return (
+    <SectionWrapper>
+      <div className="flex flex-wrap justify-between">
+        <IconLabel
+          className={
+            availabe
+              ? "text-green-500 w-full md:w-1/2"
+              : "text-red-700 w-full md:w-1/2"
+          }
+          icon={<FontAwesomeIcon icon={availabe ? faCheck : faXmark} />}
+        >
+          {availabe ? "Available" : "Not available"}
+        </IconLabel>
+        <IconLabel
+          className="w-full md:w-1/2"
+          icon={<FontAwesomeIcon icon={faTruck} />}
+        >
+          {props.delivery ? "Shipping Included" : "Paid Delivery"}
+        </IconLabel>
+        <IconLabel
+          className="w-full md:w-1/2"
+          icon={<FontAwesomeIcon icon={faPhone} />}
+        >
+          CHANGE TO AUTHOR PHONE
+        </IconLabel>
+        <IconLabel
+          className="w-full md:w-1/2"
+          icon={<FontAwesomeIcon icon={faEnvelope} />}
+        >
+          CHANGE TO AUTHOR EMAIL
+        </IconLabel>
+      </div>
+    </SectionWrapper>
+  );
 };
 
 const SectionWrapper = (props) => {

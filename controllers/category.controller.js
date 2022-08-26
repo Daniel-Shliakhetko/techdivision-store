@@ -31,10 +31,10 @@ const postCategory = async (req, res) => {
   }
 };
 
-const getCategory = async (req, res) => {
+const getCategory = (req, res) => {
   const id = req.params.id;
 
-  Category.findById()
+  Category.findById(id)
     .then((data) => {
       res.status(201).json(data);
     })
@@ -43,7 +43,55 @@ const getCategory = async (req, res) => {
     });
 };
 
+const getCategoryByPath = (req, res) => {
+  const slug = "/" + req.params.parent;
+  const children = req.params.children ? "/" + req.params.children : "";
+
+  Category.findOne({ category: slug + children })
+    .then((data) => {
+      res.status(201).json(data);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "Something went wrong" });
+    });
+};
+
+const getCategoryChlidrens = async (req, res) => {
+  const parent = "/" + req.params.parent;
+  const children = req.params.children ? "/" + req.params.children : "";
+
+  const childrens = await Category.find({ parent: parent + children });
+
+  if (childrens) {
+    res.status(201).json(childrens);
+  } else {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+const getCategoryParent = async (req, res) => {
+  const slug = "/" + req.params.parent;
+  const children = req.params.children ? "/" + req.params.children : "";
+
+  const object = await Category.findOne({ category: slug + children });
+
+  if (object) {
+    Category.findOne({ category: object.parent })
+      .then((data) => {
+        res.status(201).json(data);
+      })
+      .catch((err) => {
+        res.status(500).json({ message: "Something went wrong" });
+      });
+  } else {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
 module.exports = {
   postCategory,
   getCategory,
+  getCategoryByPath,
+  getCategoryChlidrens,
+  getCategoryParent
 };

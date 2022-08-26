@@ -45,7 +45,7 @@ export const ProductCard = (props) => {
         <ProductColors colors={product.colors} />
         <span
           className="font-bold"
-          title={priceWithCurrency(product.prices[1])}
+          title={priceWithCurrency(product.prices[1].price,product.prices[1].currency)}
         >
           {priceWithCurrency(product.prices[1])}
         </span>

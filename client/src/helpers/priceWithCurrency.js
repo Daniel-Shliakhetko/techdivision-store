@@ -1,5 +1,5 @@
-export const priceWithCurrency = (price) => {
-  return `${price.price} ${getCurrencySymbol(price.currency)}`;
+export const priceWithCurrency = (price, currency) => {
+  return `${price} ${getCurrencySymbol(currency)}`;
 };
 
 const getCurrencySymbol = (currency) => {

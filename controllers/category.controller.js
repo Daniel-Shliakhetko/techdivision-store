@@ -56,6 +56,24 @@ const getCategoryByPath = (req, res) => {
     });
 };
 
+const getCategoryByName = async (req, res) => {
+  try {
+    const name = req.params.name;
+
+    const categories = await Category.find({});
+
+    if (categories) {
+      categories.map((category, i) => {
+        if (tagGenerator.generate(category.title) === name) {
+          return res.status(201).json(category);
+        }
+      });
+    }
+  } catch (e) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
 const getCategoryChlidrens = async (req, res) => {
   const parent = "/" + req.params.parent;
   const children = req.params.children ? "/" + req.params.children : "";
@@ -93,5 +111,6 @@ module.exports = {
   getCategory,
   getCategoryByPath,
   getCategoryChlidrens,
-  getCategoryParent
+  getCategoryParent,
+  getCategoryByName,
 };

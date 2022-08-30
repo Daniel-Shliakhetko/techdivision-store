@@ -1,7 +1,7 @@
 const UrlSafeString = require("url-safe-string"),
   tagGenerator = new UrlSafeString();
 
-const Category = require("../models/Category");
+const {Category} = require("../models/Category");
 
 const postCategory = async (req, res) => {
   try {

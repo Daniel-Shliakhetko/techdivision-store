@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { cateogrySchema } = require("../models/Category");
+const { categorySchema } = require("../models/Category");
 
 const commentSchema = new Schema({
   author: {
@@ -55,7 +55,7 @@ const productSchema = new Schema({
       discount: { type: Number, required: true, min: 0, max: 100 },
     },
   ],
-  categories: [cateogrySchema],
+  categories: [categorySchema],
   comments: [commentSchema],
   author: {
     type: mongoose.Types.ObjectId,
@@ -74,4 +74,4 @@ const productSchema = new Schema({
 
 const Product = mongoose.model("Product", productSchema);
 
-module.exports = Products;
+module.exports = Product;

@@ -36,10 +36,19 @@ const postProduct = (req, res) => {
     })
     .catch((err) => {
       res.status(500).json({ message: "Something went wrong" });
-      console.log(err);
     });
 };
 
-const getProduct = (req, res) => {};
+const getProduct = async (req, res) => {
+  const id = req.params.id;
+
+  const product = await Product.findById(id);
+
+  if (product) {
+    res.status(201).json(product);
+  } else {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
 
 module.exports = { postProduct, getProduct };

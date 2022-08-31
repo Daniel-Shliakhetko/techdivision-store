@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BreadCrumbs } from "../components/BreadCrumbs";
 import { Stars } from "../components/Stars";
 import { useParams } from "react-router-dom";
@@ -21,9 +21,12 @@ import {
   faTruck,
   faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-const product = {
-  title: "Bluse",
+const testProduct = {
+  title: "NONE",
   description:
     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi magnam sequi esse nam odio maiores error quaerat voluptatibus, voluptatum laborum culpa earum animi provident ullam nesciunt nemo? Earum, reiciendis illo.",
   date: new Date(),
@@ -123,28 +126,46 @@ const product = {
 };
 
 export const ProductPage = (props) => {
-  const colors = product.categories.filter(
-    (category) => category.parent === "/color"
-  );
+  const params = useParams();
+  const id = params.id;
 
-  const brand = product.categories.find(
-    (category) => category.parent === "/brand"
-  );
+  const [product, setProduct] = useState({});
+  const [colors, setColors] = useState(null);
+  const [brand, setBrand] = useState(null);
+
+  axios
+    .get("/api/product/get/id/" + id)
+    .then((res) => {
+      console.log(res.data);
+      setProduct(res.data);
+      setColors(
+        product.categories.filter((category) => category.parent === "/color")
+      );
+      setBrand(
+        product &&
+          product.categories.find((category) => category.parent === "/brand")
+      );
+    })
+    .catch((err) => {
+      if (err.response) {
+        console.error(err.response.data);
+      }
+    });
 
   return (
     <div className="px-4 md:px-12">
-      <BreadCrumbs objectTitle={product.title} />
+      {/* <BreadCrumbs objectTitle={product.title} /> */}
       <hr className="h-1 mb-1.5 bg-grey-200/50" />
       <MainInfo rating={product.rating} brand={brand}>
         {product.title}
       </MainInfo>
-      <Description>{product.description}</Description>
-      <Payment colors={colors} prices={product.prices}></Payment>
+      {/* <Description>{product.description}</Description>
+      <Payment product={product} colors={colors} prices={product.prices}></Payment>
       <AdditionalInfo
         available={product.available}
         delivery={product.delivery}
       />
-      <Comments comments={product.comments} />
+      <Comments comments={product.comments} /> */}
     </div>
   );
 };
@@ -155,12 +176,14 @@ const MainInfo = (props) => {
   return (
     <SectionWrapper>
       <div className="flex flex-col md:flex-row justify-between">
-        <h1 className="font-bold text-2xl uppercase">{props.children}</h1>
-        <BrandLogo title={props.brand.title} />
+        <h1 className="font-bold text-2xl uppercase w-full md:w-1/2">
+          {props.children || <Skeleton />}
+        </h1>
+        {props.brand ? <BrandLogo title={props.brand.title} /> : <Skeleton style={{width: "4rem", height:"4rem"}}/>}
       </div>
-      <div className="flex flex-col md:flex-row justify-between mt-2">
-        <span>Product №: {params.id}</span>
-        <Stars rating={props.rating} showNumberOfVotes={true} />
+      <div className="flex flex-col md:flex-row justify-between mt-2 min-w-full">
+        {props.children ? <span>{`Product №: ${params.id}`}</span> : <Skeleton style={{width: "25vw", height:"1rem"}}/> }
+        {props.rating ? <Stars rating={props.rating} showNumberOfVotes={true} /> : <Skeleton style={{width: "25vw", height:"1.75rem"}}/>}
       </div>
     </SectionWrapper>
   );
@@ -175,40 +198,30 @@ const Description = (props) => {
 };
 
 const Payment = (props) => {
+  const { prices } = props;
   const priceWithDiscount =
-    Math.floor(
-      product.prices[1].price * (1 - product.prices[1].discount / 100) * 100
-    ) / 100;
+    Math.floor(prices[1].price * (1 - prices[1].discount / 100) * 100) / 100;
 
   return (
     <SectionWrapper>
       <div className="space-x-4 mb-4">
         <span
-          title={priceWithCurrency(
-            product.prices[1].price,
-            product.prices[1].currency
-          )}
+          title={priceWithCurrency(prices[1].price, prices[1].currency)}
           className="font-black text-grey-300 text-lg  line-through"
         >
-          {priceWithCurrency(
-            product.prices[1].price,
-            product.prices[1].currency
-          )}
+          {priceWithCurrency(prices[1].price, prices[1].currency)}
         </span>
         <span
-          title={priceWithCurrency(
-            priceWithDiscount,
-            product.prices[1].currency
-          )}
+          title={priceWithCurrency(priceWithDiscount, prices[1].currency)}
           className="font-black text-red-700 text-lg text"
         >
-          {priceWithCurrency(priceWithDiscount, product.prices[1].currency)}
+          {priceWithCurrency(priceWithDiscount, prices[1].currency)}
         </span>
         <span
-          title={product.prices[1].discount + "%"}
+          title={prices[1].discount + "%"}
           className="text-grey-300 text-md"
         >
-          Discount: {product.prices[1].discount}%
+          Discount: {prices[1].discount}%
         </span>
       </div>
       <ProductColors colors={props.colors} />
@@ -265,7 +278,7 @@ const Comments = (props) => {
       <h2 className="font-bold text-lg uppercase mb-6">Comments</h2>
       <div className="space-y-4">
         {comments.map((comment, i) => (
-          <Comment comment={comment} />
+          <Comment key={i} comment={comment} />
         ))}
       </div>
     </SectionWrapper>
@@ -280,7 +293,7 @@ const Comment = (props) => {
       <p>{comment.description}</p>
       <Stars rate={comment.rate} />
       <span className="text-grey-300">
-        Posted on: {new Date(comment.date).toUTCString()}
+        Posted on: {new Date(comment.lastUpdatedAt).toUTCString()}
       </span>
     </div>
   );

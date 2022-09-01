@@ -11,7 +11,9 @@ export const Stars = (props) => {
     ? ratingToNumber(comments.map((comment) => comment.rate))
     : rate
     ? rate
-    : ratingToNumber(rating);
+    : rating
+    ? ratingToNumber(rating)
+    : null
 
   const countNumberOfVotes = () => {
     let answer = 0;

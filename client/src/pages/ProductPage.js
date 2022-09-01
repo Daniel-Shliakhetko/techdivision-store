@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BreadCrumbs } from "../components/BreadCrumbs";
 import { Stars } from "../components/Stars";
 import { useParams } from "react-router-dom";
@@ -133,39 +133,47 @@ export const ProductPage = (props) => {
   const [colors, setColors] = useState(null);
   const [brand, setBrand] = useState(null);
 
-  axios
-    .get("/api/product/get/id/" + id)
-    .then((res) => {
-      console.log(res.data);
-      setProduct(res.data);
-      setColors(
-        product.categories.filter((category) => category.parent === "/color")
-      );
-      setBrand(
-        product &&
+  const getProductAndAuthor = async () => {
+    try {
+      const productRes = await axios.get("/api/product/get/id/" + id);
+      if (productRes.data) {
+        console.log(productRes.data);
+        setProduct(productRes.data);
+        console.log(product.categories);
+        setColors(
+          product.categories.filter((category) => category.parent === "/color")
+        );
+        setBrand(
           product.categories.find((category) => category.parent === "/brand")
-      );
-    })
-    .catch((err) => {
-      if (err.response) {
-        console.error(err.response.data);
+        );
+        const userRes = await axios.get("/api/user/get/" + product.author);
+        // if(userRes.data){
+        console.log(userRes);
+        // }
       }
-    });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getProductAndAuthor();
+  }, []);
 
   return (
     <div className="px-4 md:px-12">
-      {/* <BreadCrumbs objectTitle={product.title} /> */}
+      <BreadCrumbs objectTitle={product.title} />
       <hr className="h-1 mb-1.5 bg-grey-200/50" />
       <MainInfo comments={product.comments} brand={brand}>
         {product.title}
       </MainInfo>
       <Description>{product.description}</Description>
       <Payment colors={colors} prices={product.prices}></Payment>
-      {/*<AdditionalInfo
+      <AdditionalInfo
         available={product.available}
         delivery={product.delivery}
       />
-      <Comments comments={product.comments} /> */}
+      <Comments comments={product.comments} />
     </div>
   );
 };
@@ -194,7 +202,7 @@ const MainInfo = (props) => {
         {props.comments ? (
           <Stars comments={props.comments} showNumberOfVotes={true} />
         ) : (
-          <Skeleton style={{ width: "25vw", height: "1.75rem" }} />
+          <Stars />
         )}
       </div>
     </SectionWrapper>
@@ -279,22 +287,30 @@ const AdditionalInfo = (props) => {
   return (
     <SectionWrapper>
       <div className="flex flex-wrap justify-between">
-        <IconLabel
-          className={
-            availabe
-              ? "text-green-500 w-full md:w-1/2"
-              : "text-red-700 w-full md:w-1/2"
-          }
-          icon={<FontAwesomeIcon icon={availabe ? faCheck : faXmark} />}
-        >
-          {availabe ? "Available" : "Not available"}
-        </IconLabel>
-        <IconLabel
-          className="w-full md:w-1/2"
-          icon={<FontAwesomeIcon icon={faTruck} />}
-        >
-          {props.delivery ? "Shipping Included" : "Paid Delivery"}
-        </IconLabel>
+        {availabe ? (
+          <IconLabel
+            className={
+              availabe
+                ? "text-green-500 w-full md:w-1/2"
+                : "text-red-700 w-full md:w-1/2"
+            }
+            icon={<FontAwesomeIcon icon={availabe ? faCheck : faXmark} />}
+          >
+            {availabe ? "Available" : "Not available"}
+          </IconLabel>
+        ) : (
+          <Skeleton style={{ width: "30vw", height: "1rem" }} />
+        )}
+        {props.delivery ? (
+          <IconLabel
+            className="w-full md:w-1/2"
+            icon={<FontAwesomeIcon icon={faTruck} />}
+          >
+            {props.delivery ? "Shipping Included" : "Paid Delivery"}
+          </IconLabel>
+        ) : (
+          <Skeleton style={{ width: "30vw", height: "1rem" }} />
+        )}
         <IconLabel
           className="w-full md:w-1/2"
           icon={<FontAwesomeIcon icon={faPhone} />}
@@ -318,9 +334,15 @@ const Comments = (props) => {
     <SectionWrapper>
       <h2 className="font-bold text-lg uppercase mb-6">Comments</h2>
       <div className="space-y-4">
-        {comments.map((comment, i) => (
-          <Comment key={i} comment={comment} />
-        ))}
+        {comments ? (
+          comments.map((comment, i) => <Comment key={i} comment={comment} />)
+        ) : (
+          <>
+            <Comment comment={{}} />
+            <Comment comment={{}} />
+            <Comment comment={{}} />
+          </>
+        )}
       </div>
     </SectionWrapper>
   );
@@ -330,11 +352,15 @@ const Comment = (props) => {
   const comment = props.comment;
   return (
     <div className="comment">
-      <h3 className="font-bold text-md">{comment.title}</h3>
-      <p>{comment.description}</p>
-      <Stars rate={comment.rate} />
+      <h3 className="font-bold text-md">{comment.title || <Skeleton />}</h3>
+      <p>{comment.description || <Skeleton count={3} />}</p>
+      <Stars rate={comment.rate || <Skeleton />} />
       <span className="text-grey-300">
-        Posted on: {new Date(comment.lastUpdatedAt).toUTCString()}
+        {comment.lastUpdatedAt ? (
+          `Posted on: ${new Date(comment.lastUpdatedAt).toUTCString()}`
+        ) : (
+          <Skeleton style={{ width: "50vw" }} />
+        )}
       </span>
     </div>
   );

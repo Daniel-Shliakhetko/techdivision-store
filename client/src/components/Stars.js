@@ -6,8 +6,12 @@ import { ratingToNumber } from "../helpers/ratingToNumber";
 export const Stars = (props) => {
   const stars = [1, 2, 3, 4, 5];
 
-  const { rate, rating, showNumberOfVotes } = props;
-  const thisRate = rate ? rate : ratingToNumber(rating);
+  const { rate, rating, comments, showNumberOfVotes } = props;
+  let thisRate = comments
+    ? ratingToNumber(comments.map((comment) => comment.rate))
+    : rate
+    ? rate
+    : ratingToNumber(rating);
 
   const countNumberOfVotes = () => {
     let answer = 0;
@@ -20,7 +24,9 @@ export const Stars = (props) => {
   return (
     <div className="flex">
       {showNumberOfVotes && (
-        <span className="mr-2">Number of votes: {rating && countNumberOfVotes()}</span>
+        <span className="mr-2">
+          Number of votes: {rating && countNumberOfVotes()}
+        </span>
       )}
       <ul className="stars flex" title={`${thisRate} / 5`}>
         {stars.map((star, i) => (

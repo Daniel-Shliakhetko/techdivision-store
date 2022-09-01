@@ -156,12 +156,12 @@ export const ProductPage = (props) => {
     <div className="px-4 md:px-12">
       {/* <BreadCrumbs objectTitle={product.title} /> */}
       <hr className="h-1 mb-1.5 bg-grey-200/50" />
-      <MainInfo rating={product.rating} brand={brand}>
+      <MainInfo comments={product.comments} brand={brand}>
         {product.title}
       </MainInfo>
-      {/* <Description>{product.description}</Description>
-      <Payment product={product} colors={colors} prices={product.prices}></Payment>
-      <AdditionalInfo
+      <Description>{product.description}</Description>
+      <Payment colors={colors} prices={product.prices}></Payment>
+      {/*<AdditionalInfo
         available={product.available}
         delivery={product.delivery}
       />
@@ -179,11 +179,23 @@ const MainInfo = (props) => {
         <h1 className="font-bold text-2xl uppercase w-full md:w-1/2">
           {props.children || <Skeleton />}
         </h1>
-        {props.brand ? <BrandLogo title={props.brand.title} /> : <Skeleton style={{width: "4rem", height:"4rem"}}/>}
+        {props.brand ? (
+          <BrandLogo title={props.brand.title} />
+        ) : (
+          <Skeleton style={{ width: "4rem", height: "4rem" }} />
+        )}
       </div>
       <div className="flex flex-col md:flex-row justify-between mt-2 min-w-full">
-        {props.children ? <span>{`Product №: ${params.id}`}</span> : <Skeleton style={{width: "25vw", height:"1rem"}}/> }
-        {props.rating ? <Stars rating={props.rating} showNumberOfVotes={true} /> : <Skeleton style={{width: "25vw", height:"1.75rem"}}/>}
+        {props.children ? (
+          <span>{`Product №: ${params.id}`}</span>
+        ) : (
+          <Skeleton style={{ width: "25vw", height: "1rem" }} />
+        )}
+        {props.comments ? (
+          <Stars comments={props.comments} showNumberOfVotes={true} />
+        ) : (
+          <Skeleton style={{ width: "25vw", height: "1.75rem" }} />
+        )}
       </div>
     </SectionWrapper>
   );
@@ -192,7 +204,7 @@ const MainInfo = (props) => {
 const Description = (props) => {
   return (
     <SectionWrapper>
-      <p>{props.children}</p>
+      <p>{props.children || <Skeleton count={3} />}</p>
     </SectionWrapper>
   );
 };
@@ -200,35 +212,64 @@ const Description = (props) => {
 const Payment = (props) => {
   const { prices } = props;
   const priceWithDiscount =
+    prices &&
     Math.floor(prices[1].price * (1 - prices[1].discount / 100) * 100) / 100;
 
   return (
     <SectionWrapper>
-      <div className="space-x-4 mb-4">
-        <span
-          title={priceWithCurrency(prices[1].price, prices[1].currency)}
-          className="font-black text-grey-300 text-lg  line-through"
-        >
-          {priceWithCurrency(prices[1].price, prices[1].currency)}
-        </span>
-        <span
-          title={priceWithCurrency(priceWithDiscount, prices[1].currency)}
-          className="font-black text-red-700 text-lg text"
-        >
-          {priceWithCurrency(priceWithDiscount, prices[1].currency)}
-        </span>
-        <span
-          title={prices[1].discount + "%"}
-          className="text-grey-300 text-md"
-        >
-          Discount: {prices[1].discount}%
-        </span>
+      <div className={prices ? "space-x-4 mb-4" : "flex space-x-4 mb-4"}>
+        {prices ? (
+          <span
+            title={priceWithCurrency(prices[1].price, prices[1].currency)}
+            className={
+              prices[1].discount
+                ? "font-black text-grey-300 text-lg  line-through"
+                : "font-black text-red-700 text-lg text"
+            }
+          >
+            {priceWithCurrency(prices[1].price, prices[1].currency)}
+          </span>
+        ) : (
+          <Skeleton style={{ width: "5rem", height: "2rem" }} />
+        )}
+        {prices ? (
+          prices[1].discount && (
+            <span
+              title={priceWithCurrency(priceWithDiscount, prices[1].currency)}
+              className="font-black text-red-700 text-lg text"
+            >
+              {priceWithCurrency(priceWithDiscount, prices[1].currency)}
+            </span>
+          )
+        ) : (
+          <Skeleton style={{ width: "5rem", height: "2rem" }} />
+        )}
+        {prices ? (
+          prices[1].discount && (
+            <span
+              title={prices[1].discount + "%"}
+              className="text-grey-300 text-md"
+            >
+              Discount: {prices[1].discount}%
+            </span>
+          )
+        ) : (
+          <Skeleton style={{ width: "5rem", height: "2rem" }} />
+        )}
       </div>
-      <ProductColors colors={props.colors} />
-      <div className="flex space-x-2 mt-2">
-        <AddToCart />
-        <SettleButton />
-      </div>
+      {props.colors ? (
+        <ProductColors colors={props.colors} />
+      ) : (
+        <Skeleton style={{ height: "1.5rem" }} />
+      )}
+      {prices ? (
+        <div className="flex space-x-2 mt-2">
+          <AddToCart />
+          <SettleButton />
+        </div>
+      ) : (
+        <Skeleton style={{ height: "2rem" }} />
+      )}
     </SectionWrapper>
   );
 };

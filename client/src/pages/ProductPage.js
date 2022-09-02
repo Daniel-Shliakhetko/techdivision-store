@@ -130,6 +130,7 @@ export const ProductPage = (props) => {
   const id = params.id;
 
   const [product, setProduct] = useState({});
+  const [user, setUser] = useState({});
   const [colors, setColors] = useState(null);
   const [brand, setBrand] = useState(null);
 
@@ -139,17 +140,23 @@ export const ProductPage = (props) => {
       if (productRes.data) {
         console.log(productRes.data);
         setProduct(productRes.data);
-        console.log(product.categories);
         setColors(
-          product.categories.filter((category) => category.parent === "/color")
+          productRes.data.categories.filter(
+            (category) => category.parent === "/color"
+          )
         );
         setBrand(
-          product.categories.find((category) => category.parent === "/brand")
+          productRes.data.categories.find(
+            (category) => category.parent === "/brand"
+          )
         );
-        const userRes = await axios.get("/api/user/get/" + product.author);
-        // if(userRes.data){
-        console.log(userRes);
-        // }
+        const userRes = await axios.get(
+          "/api/user/get/" + productRes.data.author
+        );
+        if (userRes.data) {
+          console.log(userRes.data);
+          setUser(userRes.data);
+        }
       }
     } catch (e) {
       console.log(e);
@@ -170,6 +177,7 @@ export const ProductPage = (props) => {
       <Description>{product.description}</Description>
       <Payment colors={colors} prices={product.prices}></Payment>
       <AdditionalInfo
+        user={user}
         available={product.available}
         delivery={product.delivery}
       />
@@ -311,18 +319,24 @@ const AdditionalInfo = (props) => {
         ) : (
           <Skeleton style={{ width: "30vw", height: "1rem" }} />
         )}
-        <IconLabel
+        {props.user.email ? props.user.phone ? <IconLabel
           className="w-full md:w-1/2"
           icon={<FontAwesomeIcon icon={faPhone} />}
         >
           CHANGE TO AUTHOR PHONE
-        </IconLabel>
-        <IconLabel
+        </IconLabel> : ""
+        : (
+          <Skeleton style={{ width: "30vw", height: "1rem" }} />
+        )}
+        {props.user.email ? <IconLabel
           className="w-full md:w-1/2"
           icon={<FontAwesomeIcon icon={faEnvelope} />}
         >
-          CHANGE TO AUTHOR EMAIL
+          {props.user.email}
         </IconLabel>
+        : (
+          <Skeleton style={{ width: "30vw", height: "1rem" }} />
+        )}
       </div>
     </SectionWrapper>
   );

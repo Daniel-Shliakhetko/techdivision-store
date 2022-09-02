@@ -15,6 +15,12 @@ export const CreatePage = (props) => {
     categories: [],
     comments: [],
   });
+  const [prices, setPrices] = useState([
+    { currency: "usd", price: null, discount: null },
+    { currency: "eur", price: null, discount: null },
+    { currency: "rub", price: null, discount: null },
+    { currency: "uah", price: null, discount: null },
+  ]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +28,16 @@ export const CreatePage = (props) => {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+  const handleChangePrices = (e) => {
+    const id = e.target.dataset.id;
+    console.log(id);
+    let price = { ...prices[id] };
+    price = { ...price, [e.target.name]: e.target.value };
+    let newPrices = [...prices];
+    newPrices[id] = price;
+    setPrices(newPrices);
+    console.log(prices);
   };
 
   const handleSubmit = (event) => {
@@ -35,12 +51,14 @@ export const CreatePage = (props) => {
       author: params.id,
       available: form.available,
       delivery: form.delivery,
-      prices: [],
+      prices: prices,
       categories: [],
       comments: [],
     };
     setLoading(true);
     setError(null);
+
+    console.log(product);
 
     axios
       .post("/api/product/add", product)
@@ -52,9 +70,11 @@ export const CreatePage = (props) => {
         setLoading(false);
         if (err.response) {
           console.error(err.response.data);
-          console.error(err.response.status);
-          console.error(err.response.headers);
-          setError(err.response.data.message);
+          setError(
+            err.response.data.errors
+              ? err.response.data.errors[0].msg
+              : err.response.data.message
+          );
         }
       });
   };
@@ -84,20 +104,64 @@ export const CreatePage = (props) => {
           className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
           onChange={handleChange}
         />
-                <input
+        <input
           type="number"
           name="available"
           placeholder="Enter product number"
           className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
           onChange={handleChange}
         />
+        <div>
+          <input
+            type="checkbox"
+            name="delivery"
+            id="delivery"
+            className="checkbox"
+            onChange={handleChange}
+          />
+          <label for="delivery" className="ml-2 text-grey-400">
+            Delivery included
+          </label>
+        </div>
+        <div className="rounded-lg bg-gray-400/25 p-4 space-y-6">
+          <h2 className="text-center text-xl font-bold uppercase mb-4 text-gray-500">
+            Prices
+          </h2>
+          {prices.map((price, i) => (
+            <div
+              className="flex w-full space-y-2 md:space-y-0 md:space-x-4 md:flex-row flex-col"
+              key={i}
+            >
+              <div>
+                <label className="font-black text-grey-400 font-xl uppercase w-10 mr-2">
+                  {price.currency}
+                </label>
                 <input
-          type="checkbox"
-          name="delivery"
-          placeholder="Enter product delivery"
-          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-          onChange={handleChange}
-        />
+                  data-id={i}
+                  type="number"
+                  name="price"
+                  placeholder="Enter product price"
+                  className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+                  onChange={handleChangePrices}
+                />
+              </div>
+              <div className="space-x-2">
+                <label className="font-black text-grey-400 font-xl">
+                  Discount:
+                </label>
+                <input
+                  data-id={i}
+                  type="number"
+                  name="discount"
+                  placeholder="Enter product discount"
+                  className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+                  onChange={handleChangePrices}
+                />
+                <label className="font-black text-grey-400 font-xl">%</label>
+              </div>
+            </div>
+          ))}
+        </div>
         <button
           type="submit"
           className={

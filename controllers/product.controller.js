@@ -45,6 +45,7 @@ const postProduct = (req, res) => {
       res.status(201).json(data);
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).json({ message: "Something went wrong" });
     });
 };

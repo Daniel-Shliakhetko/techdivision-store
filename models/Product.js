@@ -52,7 +52,7 @@ const productSchema = new Schema({
     {
       currency: { type: String, required: true },
       price: { type: Number, required: true, min: 0 },
-      discount: { type: Number, required: true, min: 0, max: 100 },
+      discount: { type: Number, min: 0, max: 100 },
     },
   ],
   categories: [categorySchema],

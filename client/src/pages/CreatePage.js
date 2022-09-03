@@ -27,17 +27,20 @@ export const CreatePage = (props) => {
   const params = useParams();
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    let check = null;
+    if (e.target.type === "checkbox") {
+      check = e.target.checked;
+    }
+    setForm({ ...form, [e.target.name]: check || e.target.value });
   };
+
   const handleChangePrices = (e) => {
     const id = e.target.dataset.id;
-    console.log(id);
     let price = { ...prices[id] };
     price = { ...price, [e.target.name]: e.target.value };
     let newPrices = [...prices];
     newPrices[id] = price;
     setPrices(newPrices);
-    console.log(prices);
   };
 
   const handleSubmit = (event) => {
@@ -51,7 +54,11 @@ export const CreatePage = (props) => {
       author: params.id,
       available: form.available,
       delivery: form.delivery,
-      prices: prices,
+      prices: prices
+        .map((price) => price.price && price)
+        .filter((element) => {
+          return element !== null;
+        }),
       categories: [],
       comments: [],
     };
@@ -116,7 +123,7 @@ export const CreatePage = (props) => {
             type="checkbox"
             name="delivery"
             id="delivery"
-            className="checkbox"
+            className="delivery"
             onChange={handleChange}
           />
           <label for="delivery" className="ml-2 text-grey-400">

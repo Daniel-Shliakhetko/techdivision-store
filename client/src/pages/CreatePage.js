@@ -23,8 +23,42 @@ export const CreatePage = (props) => {
   ]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [parentCategories, setParentCategories] = useState([]);
+  const [file, setFile] = useState(null);
 
   const params = useParams();
+
+  const getCategories = () => async () => {
+    try {
+      const parentCategoriesRes = await axios.get(
+        "/api/category/get/main/childrens"
+      );
+      if (parentCategoriesRes) {
+        const answer = [];
+        parentCategoriesRes.data.map(async (parentCategory, i) => {
+          const categoriesRes = await axios.get(
+            "/api/category/get" + parentCategory.category + "/childrens"
+          );
+          if (categoriesRes) {
+            console.log(categoriesRes.data);
+            const currentCategory = {
+              ...parentCategoriesRes.data[i],
+              childrens: categoriesRes.data,
+            };
+            // console.log(typeof currentCategory);
+            answer.push(currentCategory);
+            if (i === parentCategoriesRes.data.length - 1) {
+              setParentCategories(answer);
+            }
+          }
+        });
+        console.log(answer);
+      }
+    } catch (e) {
+      console.log(e);
+      getCategories();
+    }
+  };
 
   const handleChange = (e) => {
     let check = null;
@@ -86,8 +120,60 @@ export const CreatePage = (props) => {
       });
   };
 
+  const handleChangeFile = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmitFile = (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    console.log(file);
+
+    axios
+      .post("/upload", formData)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(getCategories, []);
+
   return (
     <div className="p-8">
+      <form
+        className="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full h-full sm:w-72 mb-12"
+        style={{ width: "100%" }}
+        onSubmit={handleSubmitFile}
+      >
+        <h1 className="text-center text-3xl font-bold uppercase mb-4 text-gray-500">
+          Add Images
+        </h1>
+        <input
+          type="file"
+          name="file"
+          placeholder="Enter product title"
+          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+          onChange={handleChangeFile}
+        />
+        <button
+          type="submit"
+          className={
+            !loading
+              ? "bg-grey-200 rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1 uppercase text-gray-500 font-semibold"
+              : "bg-grey-300 rounded-sm border-grey-400 outline-grey-400 outline-2 border p-1 uppercase text-gray-700 font-semibold"
+          }
+          disabled={loading}
+        >
+          ADD Images
+        </button>
+      </form>
       <form
         className="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full h-full sm:w-72 mb-12"
         style={{ width: "100%" }}
@@ -126,9 +212,7 @@ export const CreatePage = (props) => {
             className="delivery"
             onChange={handleChange}
           />
-          <label for="delivery" className="ml-2 text-grey-400">
-            Delivery included
-          </label>
+          <label className="ml-2 text-grey-400">Delivery included</label>
         </div>
         <div className="rounded-lg bg-gray-400/25 p-4 space-y-6">
           <h2 className="text-center text-xl font-bold uppercase mb-4 text-gray-500">
@@ -168,6 +252,56 @@ export const CreatePage = (props) => {
               </div>
             </div>
           ))}
+        </div>
+        <div className="rounded-lg bg-gray-400/25 p-4 space-y-6">
+          <h2 className="text-center text-xl font-bold uppercase mb-4 text-gray-500 w-full">
+            Categories
+          </h2>
+          {parentCategories.map(
+            (parentCategory, i) =>
+              parentCategory.title && (
+                <div className="flex w-full space-y-2 flex-col" key={i}>
+                  <h3 className="text-center text-lg font-bold uppercase mb-4 text-gray-500 w-full">
+                    {parentCategory.title}
+                  </h3>
+                  {parentCategory.childrens &&
+                    parentCategory.childrens.map((category, i) => {
+                      if (category.data.color) {
+                        return (
+                          <div className="flex items-center flex-row space-x-2">
+                            <input
+                              key={i}
+                              type="checkbox"
+                              name="price"
+                              placeholder={"Enter product " + category.title}
+                              className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+                              onChange={handleChangePrices}
+                            />
+                            <label className="font-black text-grey-400 font-xl uppercase w-10 mr-2">
+                              {category.title}
+                            </label>
+                            <div
+                              className="h-5 w-5 relative border border-grey-200/75"
+                              style={{ backgroundColor: category.data.color }}
+                            />
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <input
+                            key={i}
+                            type="number"
+                            name="price"
+                            placeholder={"Enter product " + category.title}
+                            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+                            onChange={handleChangePrices}
+                          />
+                        );
+                      }
+                    })}
+                </div>
+              )
+          )}
         </div>
         <button
           type="submit"

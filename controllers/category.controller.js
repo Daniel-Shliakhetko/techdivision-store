@@ -6,8 +6,9 @@ const {Category} = require("../models/Category");
 const postCategory = async (req, res) => {
   try {
     const { parent, title, description, data } = req.body;
+    const parentSlug = parent === "/" ? "" : parent
 
-    const category = parent + "/" + tagGenerator.generate(title);
+    const category = parentSlug + "/" + tagGenerator.generate(title);
 
     const categoryObj = new Category({
       category,
@@ -78,7 +79,7 @@ const getCategoryChlidrens = async (req, res) => {
   const parent = "/" + req.params.parent;
   const children = req.params.children ? "/" + req.params.children : "";
 
-  const childrens = await Category.find({ parent: parent + children });
+  const childrens = await Category.find({ parent: req.params.parent === "main" ? "/" : parent + children });
 
   if (childrens) {
     res.status(201).json(childrens);

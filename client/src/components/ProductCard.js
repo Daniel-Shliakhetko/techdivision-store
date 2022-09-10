@@ -47,7 +47,7 @@ export const ProductCard = (props) => {
           className="font-bold"
           title={priceWithCurrency(product.prices[1].price,product.prices[1].currency)}
         >
-          {priceWithCurrency(product.prices[1])}
+          {priceWithCurrency(product.prices[1].price,product.prices[1].currency)}
         </span>
         <Stars rate={ratingToNumber(product.rating)} />
       </div>

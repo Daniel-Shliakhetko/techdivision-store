@@ -60,7 +60,8 @@ export const Pagination = (props) => {
       return number + showNumber < max - 1
     }
     else{
-      return number - showNumber < 0
+      console.log(number - showNumber);
+      return number - showNumber > 2
     }
   };
 
@@ -83,7 +84,7 @@ export const Pagination = (props) => {
         )}
         {getShowNumbers().map((number, i) => (
           <>
-            {i===getShowNumbers().length-1 && canPlaceDots(number, true) && <span>...</span>}
+            {i===1 && canPlaceDots(pagination, false) && <span>...</span>}
             <button
               onClick={() => {
                 paginationButton(number);
@@ -101,7 +102,8 @@ export const Pagination = (props) => {
             >
               {number}
             </button>
-            {i===0 && canPlaceDots(number, false) && <span>...</span>}
+            {i===getShowNumbers().length-2 && canPlaceDots(pagination, true) && <span>...</span>}
+
           </>
         ))}
         {pagination <= products.length / itemsPerPage && (

@@ -10,6 +10,7 @@ import { ShoppingCartPage } from "./pages/ShoppingCartPage";
 import { CreatePage } from "./pages/CreatePage";
 import { SearchPage } from "./pages/SearchPage";
 import { ErrorPage } from "./pages/ErrorPage";
+import { ImagePage } from "./pages/ImagePage";
 
 const mainPath = "";
 
@@ -32,6 +33,7 @@ export const Router = (props) => {
       />
       <Route path={mainPath + "/users/:id/create"} element={<CreatePage />} />
       <Route path={mainPath + "/search/:search"} element={<SearchPage />} />
+      <Route path={mainPath + "/images/:filename"} element={<ImagePage />} />
       <Route path={"*"} element={<ErrorPage />} />
     </Routes>
   );

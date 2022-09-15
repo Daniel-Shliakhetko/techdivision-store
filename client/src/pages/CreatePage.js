@@ -134,12 +134,12 @@ export const CreatePage = (props) => {
     console.log(file);
 
     axios
-      .post("/upload", formData)
+      .post("/api/photos/upload", formData)
       .then((res) => {
         console.log(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response);
       });
   };
 

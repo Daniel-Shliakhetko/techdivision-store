@@ -44,10 +44,10 @@ router.get("/download/:filename", (req, res) => {
     chunkSizeBytes: 1024,
     bucketName: "photos",
   });
-
+//   client/src/images/cache/
   gridfsbucket
     .openDownloadStreamByName(filename)
-    .pipe(fs.createWriteStream("./" + filename))
+    .pipe(fs.createWriteStream("./client/src/images/cache/" + filename))
     .on("error", function (error) {
       console.log("error" + error);
       res.status(404).json({

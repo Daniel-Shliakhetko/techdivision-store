@@ -1,16 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export const ImagePage = (props) => {
   const params = useParams();
 
-  // const {image} = import("../../../"+ params.filename);
-  let image;
-  try {
-    image = require("../images/" + params.filename);
-  } catch (e) {
-    image = false;
-  }
+  const [image, setImage] = useState(true);
+
+  useEffect(() => {
+    axios.get("/api/photos/download/" + params.filename).then(() => {
+      try {
+        setImage(require("../images/cache/" + params.filename));
+      } catch (e) {
+        setImage(false);
+      }
+    }).catch((error)=>{
+        console.log(error);
+    });
+  }, []);
 
   return (
     <div className="w-full h-screen flex justify-center items-center">

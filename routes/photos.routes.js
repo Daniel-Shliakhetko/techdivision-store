@@ -31,6 +31,7 @@ const imageUpload = require("../middleware/imageUpload.js");
 //       });
 //     });
 // });
+const mainPath="./client/src/images/cache/" ;
 
 router.post("/upload", imageUpload.single("file"), (req, res) => {
   res.json({ file: req.file });
@@ -47,7 +48,7 @@ router.get("/download/:filename", (req, res) => {
 //   client/src/images/cache/
   gridfsbucket
     .openDownloadStreamByName(filename)
-    .pipe(fs.createWriteStream("./client/src/images/cache/" + filename))
+    .pipe(fs.createWriteStream(mainPath + filename))
     .on("error", function (error) {
       console.log("error" + error);
       res.status(404).json({
@@ -58,6 +59,12 @@ router.get("/download/:filename", (req, res) => {
       console.log("done!");
       res.send("Downloaded successfully!");
     });
+});
+
+router.get("/delete/:filename", (req, res) => {
+  const filename = req.params.filename;
+
+  fs.unlinkSync(mainPath + filename)
 });
 
 module.exports = router;

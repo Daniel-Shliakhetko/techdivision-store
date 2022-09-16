@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export const ImagePage = (props) => {
+export const Image = (props) => {
   const {filename, url} = props;
 
   const [image, setImage] = useState({ searching: true });

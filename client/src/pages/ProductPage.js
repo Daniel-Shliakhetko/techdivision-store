@@ -7,6 +7,7 @@ import { ProductColors } from "../components/ProductColors";
 import { priceWithCurrency } from "../helpers/priceWithCurrency";
 import { AddToCart, SettleButton } from "../components/Button";
 import { IconLabel } from "../components/IconLabel";
+import { Image } from "../components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
@@ -181,6 +182,7 @@ export const ProductPage = (props) => {
         available={product.available}
         delivery={product.delivery}
       />
+      <Gallery images={product.images} />
       <Comments comments={product.comments} />
     </div>
   );
@@ -319,22 +321,28 @@ const AdditionalInfo = (props) => {
         ) : (
           <Skeleton style={{ width: "30vw", height: "1rem" }} />
         )}
-        {props.user.email ? props.user.phone ? <IconLabel
-          className="w-full md:w-1/2"
-          icon={<FontAwesomeIcon icon={faPhone} />}
-        >
-          CHANGE TO AUTHOR PHONE
-        </IconLabel> : ""
-        : (
+        {props.user.email ? (
+          props.user.phone ? (
+            <IconLabel
+              className="w-full md:w-1/2"
+              icon={<FontAwesomeIcon icon={faPhone} />}
+            >
+              CHANGE TO AUTHOR PHONE
+            </IconLabel>
+          ) : (
+            ""
+          )
+        ) : (
           <Skeleton style={{ width: "30vw", height: "1rem" }} />
         )}
-        {props.user.email ? <IconLabel
-          className="w-full md:w-1/2"
-          icon={<FontAwesomeIcon icon={faEnvelope} />}
-        >
-          {props.user.email}
-        </IconLabel>
-        : (
+        {props.user.email ? (
+          <IconLabel
+            className="w-full md:w-1/2"
+            icon={<FontAwesomeIcon icon={faEnvelope} />}
+          >
+            {props.user.email}
+          </IconLabel>
+        ) : (
           <Skeleton style={{ width: "30vw", height: "1rem" }} />
         )}
       </div>
@@ -389,9 +397,14 @@ const WriteComment = (props) => {
 };
 
 const Gallery = (props) => {
+  const { images } = props;
+
   return (
     <SectionWrapper>
       <h2 className="font-bold text-lg uppercase">Comments</h2>
+      <div>
+        {images && images.map((image) => <Image filename={image.imageName} />)}
+      </div>
     </SectionWrapper>
   );
 };

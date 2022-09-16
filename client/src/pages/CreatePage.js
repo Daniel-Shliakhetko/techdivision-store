@@ -11,6 +11,7 @@ export const CreatePage = (props) => {
     author: "",
     available: "",
     delivery: "",
+    images: [],
     prices: [],
     categories: [],
     comments: [],
@@ -88,6 +89,7 @@ export const CreatePage = (props) => {
       author: params.id,
       available: form.available,
       delivery: form.delivery,
+      images: [{imageName:"1663259518668-photo_2022-09-13_17-24-46.jpg"}],
       prices: prices
         .map((price) => price.price && price)
         .filter((element) => {

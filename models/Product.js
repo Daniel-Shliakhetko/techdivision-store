@@ -6,12 +6,12 @@ const { categorySchema } = require("../models/Category");
 const commentSchema = new Schema({
   author: {
     type: mongoose.Types.ObjectId,
-    ref:'User',
+    ref: "User",
     required: true,
   },
   rate: {
-    type:Number,
-    required:true,
+    type: Number,
+    required: true,
   },
   title: {
     type: String,
@@ -20,7 +20,7 @@ const commentSchema = new Schema({
   description: {
     type: String,
     required: true,
-  },  
+  },
   createdAt: {
     type: Date,
     required: true,
@@ -48,6 +48,7 @@ const productSchema = new Schema({
   delivery: {
     type: Boolean,
   },
+  images: [{ imageName: { type: String } }],
   prices: [
     {
       currency: { type: String, required: true },
@@ -59,7 +60,7 @@ const productSchema = new Schema({
   comments: [commentSchema],
   author: {
     type: mongoose.Types.ObjectId,
-    ref:'User',
+    ref: "User",
     required: true,
   },
   createdAt: {

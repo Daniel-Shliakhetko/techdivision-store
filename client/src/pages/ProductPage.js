@@ -391,7 +391,7 @@ const Comment = (props) => {
 const WriteComment = (props) => {
   return (
     <SectionWrapper>
-      <h2 className="font-bold text-lg uppercase">Comments</h2>
+      <h2 className="font-bold text-lg uppercase">Write Comment</h2>
     </SectionWrapper>
   );
 };
@@ -401,9 +401,13 @@ const Gallery = (props) => {
 
   return (
     <SectionWrapper>
-      <h2 className="font-bold text-lg uppercase">Comments</h2>
-      <div>
-        {images && images.map((image) => <Image filename={image.imageName} />)}
+      <h2 className="font-bold text-lg uppercase">Gallery</h2>
+      <div className="w-1/2 h-60">
+        {images ? (
+          images.map((image) => <Image filename={image.imageName} />)
+        ) : (
+          <Skeleton style={{ width: "100%", height: "100%" }} />
+        )  }
       </div>
     </SectionWrapper>
   );

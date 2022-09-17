@@ -22,6 +22,7 @@ export const CreatePage = (props) => {
     { currency: "rub", price: null, discount: null },
     { currency: "uah", price: null, discount: null },
   ]);
+  const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [parentCategories, setParentCategories] = useState([]);
@@ -89,7 +90,7 @@ export const CreatePage = (props) => {
       author: params.id,
       available: form.available,
       delivery: form.delivery,
-      images: [{imageName:"1663259518668-photo_2022-09-13_17-24-46.jpg"}],
+      images: [{ imageName: "1663259518668-photo_2022-09-13_17-24-46.jpg" }],
       prices: prices
         .map((price) => price.price && price)
         .filter((element) => {
@@ -144,6 +145,60 @@ export const CreatePage = (props) => {
         console.log(err.response);
       });
   };
+
+  const handleChangeCateogry = (e) => {
+    const categorySlug = e.target.dataset.category;
+    const parentSlug = e.target.dataset.category;
+    const isChecked = e.target.checked;
+
+    const category = findCategoryBySlug(categorySlug);
+    if (isChecked) {
+      setCategories([...categories, category]);
+    } else {
+      setCategories([
+        ...categories.filter((element) => {
+          return element === category;
+        }),
+      ]);
+    }
+
+    let parents = [];
+
+    categories.forEach((category) => {
+      if (category.parent === "/") parents.push(category);
+    });
+
+    categories.forEach((category) => {});
+
+    // parents.forEach((parent) => {
+
+    // });
+    parentCategories.forEach((parent) => {
+      categories.forEach((category) => {
+        if (category.parent === parent.category && !parents.includes(parent))
+          setCategories([ ...categories, findCategoryBySlug(parent.category)]);
+      });
+    });
+
+    console.log(categories);
+  };
+
+  const findCategoryBySlug = (slug) => {
+    if (slug.split("/").length - 1 === 1) {
+      for (let i = 0; i < parentCategories.length; i++) {
+        if (parentCategories[i].category === slug) return parentCategories[i];
+      }
+    } else {
+      for (let i = 0; i < parentCategories.length; i++) {
+        for (let j = 0; j < parentCategories[i].childrens.length; j++) {
+          if (parentCategories[i].childrens[j].category === slug)
+            return parentCategories[i].childrens[j];
+        }
+      }
+    }
+  };
+
+  const findParentBySlug = (slug) => {};
 
   useEffect(getCategories, []);
 
@@ -277,7 +332,9 @@ export const CreatePage = (props) => {
                               name="price"
                               placeholder={"Enter product " + category.title}
                               className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-                              onChange={handleChangePrices}
+                              data-category={category.category}
+                              data-parentCategory={category.parent}
+                              onChange={handleChangeCateogry}
                             />
                             <label className="font-black text-grey-400 font-xl uppercase w-10 mr-2">
                               {category.title}

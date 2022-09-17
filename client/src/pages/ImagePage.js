@@ -8,6 +8,7 @@ export const ImagePage = (props) => {
   const [image, setImage] = useState({searching:true});
 
   useEffect(() => {
+    if(image && !image.searching) return;
     axios.get("/api/photos/download/" + params.filename).then(() => {
       try {
         setImage(require("../images/cache/" + params.filename));

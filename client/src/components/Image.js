@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 export const Image = (props) => {
-  const { filename, url } = props;
+  const {className, filename, url } = props;
 
   const [image, setImage] = useState({ searching: true });
 
@@ -32,8 +32,8 @@ export const Image = (props) => {
   }, []);
 
   return image && !image.searching ? (
-    <img className="h-full" src={image} alt="" />
+    <img className={className || "h-full"} src={image} alt="" />
   ) : (
-    <Skeleton style={{ width: "100%", height: "100%" }} />
+    <Skeleton className={className} style={className && { width: "100%", height: "100%" }} />
   );
 };

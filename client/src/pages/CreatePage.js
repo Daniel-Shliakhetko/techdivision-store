@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Image } from "../components/Image";
 
 export const CreatePage = (props) => {
   const [form, setForm] = useState({
@@ -42,7 +43,6 @@ export const CreatePage = (props) => {
             "/api/category/get" + parentCategory.category + "/childrens"
           );
           if (categoriesRes) {
-            console.log(categoriesRes.data);
             const currentCategory = {
               ...parentCategoriesRes.data[i],
               childrens: categoriesRes.data,
@@ -54,7 +54,6 @@ export const CreatePage = (props) => {
             }
           }
         });
-        console.log(answer);
       }
     } catch (e) {
       console.log(e);
@@ -96,7 +95,7 @@ export const CreatePage = (props) => {
         .filter((element) => {
           return element !== null;
         }),
-      categories: [],
+      categories: categories,
       comments: [],
     };
     setLoading(true);
@@ -148,18 +147,21 @@ export const CreatePage = (props) => {
 
   const handleChangeCateogry = (e) => {
     const categorySlug = e.target.dataset.category;
-    const parentSlug = e.target.dataset.category;
     const isChecked = e.target.checked;
+
+    let addCats = [];
+    let remCats = [];
 
     const category = findCategoryBySlug(categorySlug);
     if (isChecked) {
-      setCategories([...categories, category]);
+      addCats.push(category);
     } else {
-      setCategories([
-        ...categories.filter((element) => {
-          return element === category;
-        }),
-      ]);
+      remCats.push(category);
+      // setCategories([
+      //   ...categories.filter((element) => {
+      //     return element !== category;
+      //   }),
+      // ]);
     }
 
     let parents = [];
@@ -168,19 +170,46 @@ export const CreatePage = (props) => {
       if (category.parent === "/") parents.push(category);
     });
 
-    categories.forEach((category) => {});
+    // categories.forEach((category) => {});
 
     // parents.forEach((parent) => {
 
     // });
+    let childrens = 0;
+
     parentCategories.forEach((parent) => {
+      childrens = 0;
       categories.forEach((category) => {
-        if (category.parent === parent.category && !parents.includes(parent))
-          setCategories([ ...categories, findCategoryBySlug(parent.category)]);
+        if (category.parent === parent.category) childrens++;
+
+        if (category.parent === parent.category && !parents.includes(parent)) {
+          addCats.push(findCategoryBySlug(parent.category));
+        }
+      });
+      addCats.forEach((category) => {
+        if (category.parent === parent.category) childrens++;
+
+        if (category.parent === parent.category && !parents.includes(parent)) {
+          addCats.push(findCategoryBySlug(parent.category));
+        }
+      });
+      console.log(childrens);
+      if (childrens === 0) {
+        remCats.push(findCategoryBySlug(parent.category));
+      }
+    });
+
+    let answer = [...addCats, ...categories];
+
+    remCats.forEach((cat) => {
+      answer = answer.filter((element) => {
+        return element !== cat;
       });
     });
 
-    console.log(categories);
+    setCategories(answer);
+
+    console.log(answer);
   };
 
   const findCategoryBySlug = (slug) => {
@@ -197,8 +226,6 @@ export const CreatePage = (props) => {
       }
     }
   };
-
-  const findParentBySlug = (slug) => {};
 
   useEffect(getCategories, []);
 
@@ -329,11 +356,11 @@ export const CreatePage = (props) => {
                             <input
                               key={i}
                               type="checkbox"
-                              name="price"
+                              name="ccheckbox"
                               placeholder={"Enter product " + category.title}
                               className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
                               data-category={category.category}
-                              data-parentCategory={category.parent}
+                              // data-parentCategory={category.parent}
                               onChange={handleChangeCateogry}
                             />
                             <label className="font-black text-grey-400 font-xl uppercase w-10 mr-2">
@@ -345,18 +372,36 @@ export const CreatePage = (props) => {
                             />
                           </div>
                         );
-                      } else {
+                      }
+                      if (category.data.logo) {
                         return (
-                          <input
-                            key={i}
-                            type="number"
-                            name="price"
-                            placeholder={"Enter product " + category.title}
-                            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-                            onChange={handleChangePrices}
-                          />
+                          <div className="flex items-center flex-row space-x-2">
+                            <input
+                              key={i}
+                              type="checkbox"
+                              name="checkbox"
+                              placeholder={"Enter product " + category.title}
+                              className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+                              data-category={category.category}
+                              onChange={handleChangeCateogry}
+                            />
+                            <Image
+                              className="h-16 w-16"
+                              filename={category.data.logo}
+                            />
+                          </div>
                         );
                       }
+                      return (
+                        <input
+                          key={i}
+                          type="number"
+                          name="price"
+                          placeholder={"Enter product " + category.title}
+                          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+                          onChange={handleChangePrices}
+                        />
+                      );
                     })}
                 </div>
               )

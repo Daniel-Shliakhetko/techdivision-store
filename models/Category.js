@@ -20,6 +20,9 @@ const categorySchema = new Schema({
   data: {
     type: Schema.Types.Mixed,
   },
+  index:{
+    type: Number
+  }
 });
 
 const Category = mongoose.model("Category", categorySchema);

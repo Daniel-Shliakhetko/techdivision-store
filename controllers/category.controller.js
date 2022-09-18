@@ -5,7 +5,7 @@ const {Category} = require("../models/Category");
 
 const postCategory = async (req, res) => {
   try {
-    const { parent, title, description, data } = req.body;
+    const { parent, title, description, data,index } = req.body;
     const parentSlug = parent === "/" ? "" : parent
 
     const category = parentSlug + "/" + tagGenerator.generate(title);
@@ -16,6 +16,7 @@ const postCategory = async (req, res) => {
       title,
       description,
       data,
+      index
     });
 
     categoryObj

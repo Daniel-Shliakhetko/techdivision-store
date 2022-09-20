@@ -350,13 +350,28 @@ export const CreatePage = (props) => {
                   </h3>
                   {parentCategory.childrens &&
                     parentCategory.childrens.map((category, i) => {
+                      if(!category.data){ return (
+                        <div className="flex items-center flex-row space-x-2">
+                          <input
+                            key={i}
+                            type="checkbox"
+                            name="checkbox"
+                            placeholder={"Enter product " + category.title}
+                            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+                            onChange={handleChangeCateogry}
+                          />
+                          <label className="font-black text-grey-400 font-xl uppercase w-10 mr-2">
+                            {category.title}
+                          </label>
+                        </div>
+                      );}
                       if (category.data.color) {
                         return (
                           <div className="flex items-center flex-row space-x-2">
                             <input
                               key={i}
                               type="checkbox"
-                              name="ccheckbox"
+                              name="checkbox"
                               placeholder={"Enter product " + category.title}
                               className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
                               data-category={category.category}
@@ -369,6 +384,7 @@ export const CreatePage = (props) => {
                             <div
                               className="h-5 w-5 relative border border-grey-200/75"
                               style={{ backgroundColor: category.data.color }}
+                              title={category.title}
                             />
                           </div>
                         );
@@ -386,22 +402,13 @@ export const CreatePage = (props) => {
                               onChange={handleChangeCateogry}
                             />
                             <Image
-                              className="h-16 w-16"
+                              className="w-16"
                               filename={category.data.logo}
+                              title={category.title}
                             />
                           </div>
                         );
                       }
-                      return (
-                        <input
-                          key={i}
-                          type="number"
-                          name="price"
-                          placeholder={"Enter product " + category.title}
-                          className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-                          onChange={handleChangePrices}
-                        />
-                      );
                     })}
                 </div>
               )

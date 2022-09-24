@@ -50,7 +50,7 @@ export const CreatePage = (props) => {
             // console.log(typeof currentCategory);
             answer.push(currentCategory);
             if (i === parentCategoriesRes.data.length - 1) {
-              setParentCategories(answer);
+              setParentCategories(sortCategories(answer));
             }
           }
         });
@@ -148,6 +148,7 @@ export const CreatePage = (props) => {
   const handleChangeCateogry = (e) => {
     const categorySlug = e.target.dataset.category;
     const isChecked = e.target.checked;
+    const isRadio = e.target.type === "radio";
 
     let addCats = [];
     let remCats = [];
@@ -157,47 +158,61 @@ export const CreatePage = (props) => {
       addCats.push(category);
     } else {
       remCats.push(category);
-      // setCategories([
-      //   ...categories.filter((element) => {
-      //     return element !== category;
-      //   }),
-      // ]);
     }
 
     let parents = [];
+    let isThereParent = false;
 
-    categories.forEach((category) => {
-      if (category.parent === "/") parents.push(category);
-    });
-
-    // categories.forEach((category) => {});
-
-    // parents.forEach((parent) => {
-
-    // });
-    let childrens = 0;
-
-    parentCategories.forEach((parent) => {
-      childrens = 0;
-      categories.forEach((category) => {
-        if (category.parent === parent.category) childrens++;
-
-        if (category.parent === parent.category && !parents.includes(parent)) {
-          addCats.push(findCategoryBySlug(parent.category));
-        }
-      });
-      addCats.forEach((category) => {
-        if (category.parent === parent.category) childrens++;
-
-        if (category.parent === parent.category && !parents.includes(parent)) {
-          addCats.push(findCategoryBySlug(parent.category));
-        }
-      });
-      console.log(childrens);
-      if (childrens === 0) {
-        remCats.push(findCategoryBySlug(parent.category));
+    categories.forEach((cat) => {
+      if (cat.parent === "/") {
+        parents.push(cat);
+        if (cat.category === category.parent) isThereParent = true;
       }
     });
+
+    let childrens = 0;
+
+    console.log(isRadio, isThereParent);
+
+    if (isRadio && isThereParent) {
+      parentCategories.forEach((parent) => {
+        childrens = 0;
+        categories.forEach((category) => {
+          if (category.parent === parent.category) {
+            console.log("CATEGORY: ", category);
+            remCats.push(findCategoryBySlug(category.category));
+          }
+        });
+      });
+    } else {
+      parentCategories.forEach((parent) => {
+        childrens = 0;
+        categories.forEach((category) => {
+          if (category.parent === parent.category) childrens++;
+
+          if (
+            category.parent === parent.category &&
+            !parents.includes(parent)
+          ) {
+            addCats.push(findCategoryBySlug(parent.category));
+          }
+        });
+        addCats.forEach((category) => {
+          if (category.parent === parent.category) childrens++;
+
+          if (
+            category.parent === parent.category &&
+            !parents.includes(parent)
+          ) {
+            addCats.push(findCategoryBySlug(parent.category));
+          }
+        });
+        console.log(childrens);
+        if (childrens === 0) {
+          remCats.push(findCategoryBySlug(parent.category));
+        }
+      });
+    }
 
     let answer = [...addCats, ...categories];
 
@@ -225,6 +240,28 @@ export const CreatePage = (props) => {
         }
       }
     }
+    return false;
+  };
+
+  // const findCategoryByParent = (slug) => {
+  //   for (let i = 0; i < parentCategories.length; i++) {
+  //     for (let j = 0; j < parentCategories[i].childrens.length; j++) {
+  //       if (parentCategories[i].childrens[j].parent === slug)
+  //         return parentCategories[i].childrens[j];
+  //     }
+  //   }
+  // };
+
+  const sortCategories = (categoriesList) => {
+    return categoriesList.sort((a, b) => {
+      if (a < b) {
+        return -1;
+      }
+      if (a > b) {
+        return 1;
+      }
+      return 0;
+    });
   };
 
   useEffect(getCategories, []);
@@ -348,68 +385,77 @@ export const CreatePage = (props) => {
                   <h3 className="text-center text-lg font-bold uppercase mb-4 text-gray-500 w-full">
                     {parentCategory.title}
                   </h3>
-                  {parentCategory.childrens &&
-                    parentCategory.childrens.map((category, i) => {
-                      if(!category.data){ return (
-                        <div className="flex items-center flex-row space-x-2">
-                          <input
-                            key={i}
-                            type="checkbox"
-                            name="checkbox"
-                            placeholder={"Enter product " + category.title}
-                            className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-                            onChange={handleChangeCateogry}
-                          />
-                          <label className="font-black text-grey-400 font-xl uppercase w-10 mr-2">
-                            {category.title}
-                          </label>
-                        </div>
-                      );}
-                      if (category.data.color) {
-                        return (
-                          <div className="flex items-center flex-row space-x-2">
-                            <input
-                              key={i}
-                              type="checkbox"
-                              name="checkbox"
-                              placeholder={"Enter product " + category.title}
-                              className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-                              data-category={category.category}
-                              // data-parentCategory={category.parent}
-                              onChange={handleChangeCateogry}
-                            />
-                            <label className="font-black text-grey-400 font-xl uppercase w-10 mr-2">
-                              {category.title}
-                            </label>
-                            <div
-                              className="h-5 w-5 relative border border-grey-200/75"
-                              style={{ backgroundColor: category.data.color }}
-                              title={category.title}
-                            />
-                          </div>
-                        );
-                      }
-                      if (category.data.logo) {
-                        return (
-                          <div className="flex items-center flex-row space-x-2">
-                            <input
-                              key={i}
-                              type="checkbox"
-                              name="checkbox"
-                              placeholder={"Enter product " + category.title}
-                              className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
-                              data-category={category.category}
-                              onChange={handleChangeCateogry}
-                            />
-                            <Image
-                              className="w-16"
-                              filename={category.data.logo}
-                              title={category.title}
-                            />
-                          </div>
-                        );
-                      }
-                    })}
+                  <CategoryWrapper isSelect={!!!parentCategory.childrens[0]}>
+                    {parentCategory.childrens &&
+                      parentCategory.childrens.map((category, i) => {
+                        if (!category.data) {
+                          return (
+                            <div className="flex items-center flex-row space-x-2">
+                              <input
+                                key={i}
+                                type={
+                                  category.parent === "/type"
+                                    ? "radio"
+                                    : "checkbox"
+                                }
+                                name={parentCategory.title.toLowerCase()}
+                                placeholder={"Enter product " + category.title}
+                                className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+                                data-category={category.category}
+                                onChange={handleChangeCateogry}
+                              />
+                              <label className="font-black text-grey-400 font-xl uppercase w-10 mr-2">
+                                {category.title}
+                              </label>
+                            </div>
+                          );
+                        }
+                        if (category.data.color) {
+                          return (
+                            <div className="flex items-center flex-row space-x-2">
+                              <input
+                                key={i}
+                                type="checkbox"
+                                name={parentCategory.title.toLowerCase()}
+                                placeholder={"Enter product " + category.title}
+                                className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+                                data-category={category.category}
+                                // data-parentCategory={category.parent}
+                                onChange={handleChangeCateogry}
+                              />
+                              <label className="font-black text-grey-400 font-xl uppercase w-10 mr-2">
+                                {category.title}
+                              </label>
+                              <div
+                                className="h-5 w-5 relative border border-grey-200/75"
+                                style={{ backgroundColor: category.data.color }}
+                                title={category.title}
+                              />
+                            </div>
+                          );
+                        }
+                        if (category.data.logo) {
+                          return (
+                            <div className="flex items-center flex-row space-x-2">
+                              <input
+                                key={i}
+                                type="radio"
+                                name={parentCategory.title.toLowerCase()}
+                                placeholder={"Enter product " + category.title}
+                                className="rounded-sm border-grey-300 outline-grey-300 outline-2 border p-1"
+                                data-category={category.category}
+                                onChange={handleChangeCateogry}
+                              />
+                              <Image
+                                className="w-16"
+                                filename={category.data.logo}
+                                title={category.title}
+                              />
+                            </div>
+                          );
+                        }
+                      })}
+                  </CategoryWrapper>
                 </div>
               )
           )}
@@ -433,4 +479,8 @@ export const CreatePage = (props) => {
       </form>
     </div>
   );
+};
+
+const CategoryWrapper = (props) => {
+  return <div>{props.children}</div>;
 };

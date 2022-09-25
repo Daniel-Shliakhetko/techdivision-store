@@ -24,6 +24,7 @@ export const CreatePage = (props) => {
     { currency: "uah", price: null, discount: null },
   ]);
   const [categories, setCategories] = useState([]);
+  const [images, setImages] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [parentCategories, setParentCategories] = useState([]);
@@ -139,6 +140,9 @@ export const CreatePage = (props) => {
       .post("/api/photos/upload", formData)
       .then((res) => {
         console.log(res.data);
+        setImages([...images, res.data.file.filename]);
+        console.log(res.data.file.filename);
+        console.log(images);
       })
       .catch((err) => {
         console.log(err.response);
@@ -294,6 +298,11 @@ export const CreatePage = (props) => {
         >
           ADD Images
         </button>
+        {images.map((image, i) => (
+          <div className="h-32 w-32">
+            <Image className="h-32 w-32" filename={image} />
+          </div>
+        ))}
       </form>
       <form
         className="bg-grey-100 rounded-lg py-6 px-4 flex flex-col justify-center space-y-1 w-full h-full sm:w-72 mb-12"

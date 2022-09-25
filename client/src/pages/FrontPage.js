@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Pagination } from "../components/Pagination";
+import axios from "axios";
 
 const product = {
   title: "Bluse",
@@ -23,15 +24,30 @@ const product = {
     { rate: 5, votes: 245 },
   ],
 };
-const products = [];
 
-for (let i = 0; i < 27; i++) {
-  products.push({...product});
-  products[i].title = products[i].title + " " + (i + 1);
-}
+// for (let i = 0; i < 27; i++) {
+//   products.push({...product});
+//   products[i].title = products[i].title + " " + (i + 1);
+// }
 
 export const FrontPage = (props) => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(
+    () => async () => {
+      const productsRes = await axios.get("/api/product/get-products");
+      if (productsRes) {
+        setProducts(productsRes.data);
+      }
+    },
+    []
+  );
   return (
-    <Pagination products={products} itemsPerPage={2} showNumber={2} showEdgesNumber={true}/>
+    <Pagination
+      products={products}
+      itemsPerPage={2}
+      showNumber={2}
+      showEdgesNumber={true}
+    />
   );
 };

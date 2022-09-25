@@ -76,4 +76,14 @@ const getProduct = async (req, res) => {
   }
 };
 
-module.exports = { postProduct, postProductValidator, getProduct };
+const getProducts = async (req, res) => {
+  const products = await Product.find({});
+
+  if (products) {
+    res.status(201).json(products);
+  } else {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+module.exports = { postProduct, postProductValidator, getProduct, getProducts };

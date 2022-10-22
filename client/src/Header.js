@@ -1,10 +1,10 @@
 import React from "react";
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import logo from "./images/techdivision-logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { IconLabel } from "./components/IconLabel";
 import { useWindowSize } from "./hooks/useWindowSize.hook";
-import {AuthContext} from './context/AuthContext'
+import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
@@ -56,27 +56,33 @@ export const Header = (props) => {
   }, [size, toggleMenu]);
 
   return (
-    !isAuthPage &&
-    <div className="header w-full bg-grey-100">
-      <HeaderInfo language={header.language} info={header.info} />
-      <nav className="w-full relative">
-        <button
-          className="absolute top-5 right-5 md:hidden"
-          onClick={() => {
-            toggleMenu(!isHidden);
-          }}
-        >
-          <div className="h-1 w-8 bg-black after:h-1 after:w-8 after:bg-black after:translate-y-2 after:content-[''] after:absolute after:top-0 after:left-0 before:h-1 before:w-8 before:bg-black before:-translate-y-2 before:content-[''] before:absolute before:top-0 before:left-0"></div>
-        </button>
-        <NavigationFunctions
-          isAuthenticated={auth.isAuthenticated}
-          navigation={header.navigation}
-          status={!isHidden}
-        />
-        <NavigationMenu navItems={header.navigation.items} status={!isHidden} />
-      </nav>
-      <HeaderTitle title={header.title} />
-    </div>
+    !isAuthPage && (
+      <div className="header w-full bg-grey-100">
+        <HeaderInfo language={header.language} info={header.info} />
+        <nav className="w-full relative">
+          <button
+            className="absolute top-5 right-5 md:hidden"
+            onClick={() => {
+              toggleMenu(!isHidden);
+            }}
+          >
+            <div className="h-1 w-8 bg-black after:h-1 after:w-8 after:bg-black after:translate-y-2 after:content-[''] after:absolute after:top-0 after:left-0 before:h-1 before:w-8 before:bg-black before:-translate-y-2 before:content-[''] before:absolute before:top-0 before:left-0"></div>
+          </button>
+          <NavigationFunctions
+            isAuthenticated={auth.isAuthenticated}
+            navigation={header.navigation}
+            status={!isHidden}
+          />
+          <NavigationMenu
+            navItems={header.navigation.items}
+            status={!isHidden}
+          />
+          <TestNavigationMenu />
+        </nav>
+
+        <HeaderTitle title={header.title} />
+      </div>
+    )
   );
 };
 
@@ -204,6 +210,23 @@ const NavigationMenu = (props) => {
         </ul>
       </div>
     )
+  );
+};
+
+const TestNavigationMenu = (props) => {
+  const items = [
+    { name: "front", slug: "/" },
+    { name: "create", slug: "/users/6304f88d74e044c19867239c/create" }
+  ];
+
+  return (
+    <div className="w-full min-h-fit py-2 px-2 md:px-[7.5%] lg:px-[15%] bg-grey-300">
+      <ul className="flex justify-between flex-col md:flex-row">
+        {items.map((navItem, i) => (
+          <NavItem key={i} navItem={navItem} />
+        ))}
+      </ul>
+    </div>
   );
 };
 

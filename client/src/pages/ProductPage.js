@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { BreadCrumbs } from "../components/BreadCrumbs";
 import { Stars } from "../components/Stars";
 import { useParams } from "react-router-dom";
-import { BrandLogo } from "../components/BrandLogo";
 import { ProductColors } from "../components/ProductColors";
 import { priceWithCurrency } from "../helpers/priceWithCurrency";
 import { AddToCart, SettleButton } from "../components/Button";
 import { IconLabel } from "../components/IconLabel";
 import { Image } from "../components/Image";
+import {findCategory} from "../helpers/findCategory";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
@@ -159,6 +159,31 @@ export const ProductPage = (props) => {
           setUser(userRes.data);
         }
       }
+      // const productRes = await fetch("/api/product/get/id/" + id, {
+      //   method: "GET",
+      // }).json();
+      // console.log(productRes);
+      // if (productRes.data) {
+      //   console.log(productRes.data);
+      //   setProduct(productRes.data);
+      //   setColors(
+      //     productRes.data.categories.filter(
+      //       (category) => category.parent === "/color"
+      //     )
+      //   );
+      //   setBrand(
+      //     productRes.data.categories.find(
+      //       (category) => category.parent === "/brand"
+      //     )
+      //   );
+      //   const userRes = await axios.get(
+      //     "/api/user/get/" + productRes.data.author
+      //   );
+      //   if (userRes.data) {
+      //     console.log(userRes.data);
+      //     setUser(userRes.data);
+      //   }
+      // }
     } catch (e) {
       console.log(e);
     }
@@ -172,7 +197,7 @@ export const ProductPage = (props) => {
     <div className="px-4 md:px-12">
       <BreadCrumbs objectTitle={product.title} />
       <hr className="h-1 mb-1.5 bg-grey-200/50" />
-      <MainInfo comments={product.comments} brand={brand}>
+      <MainInfo comments={product.comments} brand={findCategory(product.categories,"brand")}>
         {product.title}
       </MainInfo>
       <Description>{product.description}</Description>
@@ -198,7 +223,7 @@ const MainInfo = (props) => {
           {props.children || <Skeleton />}
         </h1>
         {props.brand ? (
-          <BrandLogo title={props.brand.title} />
+          <BrandLogo filename={props.brand.title} />
         ) : (
           <Skeleton style={{ width: "4rem", height: "4rem" }} />
         )}
@@ -407,7 +432,7 @@ const Gallery = (props) => {
           images.map((image) => <Image filename={image.imageName} />)
         ) : (
           <Skeleton style={{ width: "100%", height: "100%" }} />
-        )  }
+        )}
       </div>
     </SectionWrapper>
   );
@@ -428,4 +453,10 @@ const SectionWrapper = (props) => {
       <hr className="mt-2 mb-3 h-1 bg-grey-200/50" />
     </div>
   );
+};
+
+const BrandLogo = (props) => {
+  <div>
+    <Image filename={props.filename} />
+  </div>;
 };

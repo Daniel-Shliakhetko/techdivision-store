@@ -10,7 +10,7 @@ const postProduct = (req, res) => {
       .status(400)
       .json({ message: "Incorect data", errors: errors.array() });
   }
-  
+
   const {
     title,
     description,
@@ -45,7 +45,7 @@ const postProduct = (req, res) => {
       res.status(201).json(data);
     })
     .catch((err) => {
-      console.log(err); 
+      console.log(err);
       res.status(500).json({ message: "Something went wrong" });
     });
 };
@@ -77,13 +77,22 @@ const getProduct = async (req, res) => {
 };
 
 const getProducts = async (req, res) => {
-  const products = await Product.find({});
+  // const products = await Product.find({})
 
-  if (products) {
-    res.status(201).json(products);
-  } else {
-    res.status(500).json({ message: "Something went wrong" });
-  }
+  Product.find({})
+    .then((data) => {
+      res.status(201).json(data);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "Something went wrong" });
+      console.log(err);
+    });
+
+  // if (products) {
+  //   res.status(201).json(products);
+  // } else {
+  //   res.status(500).json({ message: "Something went wrong" });
+  // }
 };
 
 module.exports = { postProduct, postProductValidator, getProduct, getProducts };
